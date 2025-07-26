@@ -48,3 +48,9 @@ temp/
 # OS
 Thumbs.db
 Desktop.ini
+
+# Database env file
+.env
+.env.local
+.env.production
+*.env
