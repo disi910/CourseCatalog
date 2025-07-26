@@ -15,7 +15,6 @@ class CourseLevel(str, enum.Enum):
 class Semester(str, enum.Enum):
     FALL = "fall"
     SPRING = "spring"
-    BOTH = "both"
 
 # Table for prerequisites
 # Many to many relation
@@ -51,7 +50,7 @@ class Course(Base):
     level = Column(Enum(CourseLevel), nullable=False, index=True)
 
     # When offered    
-    semester = Column(ARRAY(String), default=[])  # PostgreSQL ARRAY type
+    semester = Column(ARRAY(Enum(Semester)), default=[])  # PostgreSQL ARRAY type
     language = Column(String, default="Norwegian")
 
     # Status
