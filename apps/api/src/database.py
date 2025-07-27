@@ -6,11 +6,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Postgresql connection
-#SQLALCHEMY_DATABASE_URL = os.getenv(
-    #"DATABASE_URL",
-    #"postgresql://postgres:Didrik2004.@localhost:5433/course_catalog"
-#)
 DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///./courses.db')
 SECRET_KEY = os.getenv('SECRET_KEY', 'development-secret-key')
 
