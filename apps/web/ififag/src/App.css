@@ -1,42 +1,109 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+
+body, .App {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.main-title {
   text-align: center;
+  font-size: 2.7rem;
+  font-weight: 700;
+  color: #3730a3;
+  margin: 40px 0 32px 0;
+  letter-spacing: 0.5px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px 48px 24px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.course-card-pro {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(55, 48, 163, 0.10), 0 1.5px 6px rgba(0,0,0,0.03);
+  padding: 28px 30px 22px 30px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.18s, box-shadow 0.18s;
+  border-left: 6px solid #6366f1;
+  position: relative;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.course-card-pro:hover {
+  transform: translateY(-6px) scale(1.025);
+  box-shadow: 0 8px 40px rgba(55, 48, 163, 0.16), 0 2px 8px rgba(0,0,0,0.04);
 }
 
-.card {
-  padding: 2em;
+.course-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 12px;
 }
 
-.read-the-docs {
-  color: #888;
+.course-badge {
+  background: linear-gradient(135deg, #6366f1 60%, #818cf8 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.05rem;
+  border-radius: 8px;
+  padding: 7px 16px;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.10);
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+.course-title-pro {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #22223b;
+  margin-bottom: 2px;
+}
+
+.course-level {
+  font-size: 0.98rem;
+  color: #6366f1;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.course-description-pro {
+  color: #4b5563;
+  margin-bottom: 20px;
+  font-size: 1.04rem;
+  line-height: 1.55;
+  min-height: 60px;
+}
+
+.course-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  font-size: 0.99rem;
+  color: #3730a3;
+  margin-top: auto;
+}
+
+.meta-label {
+  display: block;
+  font-size: 0.93rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.meta-value {
+  display: block;
+  font-weight: 600;
+  color: #3730a3;
+  margin-top: 2px;
 }
