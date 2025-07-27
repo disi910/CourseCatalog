@@ -27,9 +27,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-courses = ["IN1000", "IN1020", "IN1010","IN1000", "IN1020", "IN1010","IN1000", "IN1020", "IN1010","IN1000", "IN1020", "IN1010"]
-
 @app.get("/")
 async def read_route():
     return {

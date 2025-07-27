@@ -1,19 +1,10 @@
-
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import or_, and_, func
+from sqlalchemy import and_, or_, func
 from typing import List, Optional
 from ..models import Course
 from ..schemas import CourseCreate, CourseUpdate
-from fastapi import HTTPException
 
 class CourseService:
-    @staticmethod
-    def get_course(db: Session, course_id: str) -> Optional[Course]:
-        return db.query(Course).filter(
-            Course.id == course_id,
-            Course.is_active
-        ).first()
-    
     @staticmethod
     def get_courses(
         db: Session,
@@ -25,127 +16,143 @@ class CourseService:
         semester: Optional[str] = None,
         search: Optional[str] = None
     ) -> List[Course]:
-        # Base query
-        query = db.query(Course).filter(Course.is_active)
-
-        # Check filters
+        """
+        Get courses with filtering and search functionality
+        """
+        # Start with base query and eagerly load prerequisites
+        query = db.query(Course).options(joinedload(Course.prerequisites)).filter(Course.is_active)
+        
+        # Apply filters
         if department:
             query = query.filter(Course.department == department)
+        
         if level:
             query = query.filter(Course.level == level)
+        
         if language:
             query = query.filter(Course.language == language)
-
-        if semester:
-            query = query.filter(Course.semester.contains([semester]))
         
-        # Search implementation for courses
+        # Fix semester filtering - use ANY to check if semester exists in array
+        if semester:
+            query = query.filter(Course.semester.any(semester))
+        
+        # Search functionality - search across multiple fields
         if search:
-            search_term = f"%{search}"
+            search_term = f"%{search}%"
             query = query.filter(
-                or_( # or_: matches any of these fields
-                    Course.id.ilike(search_term), # ilike: case-insensitive
+                or_(
+                    Course.id.ilike(search_term),
                     Course.title.ilike(search_term),
                     Course.title_english.ilike(search_term),
-                    Course.description.ilike(search_term)
+                    Course.description.ilike(search_term),
+                    Course.instructor.ilike(search_term)
                 )
             )
         
-        query = query.order_by(Course.id)
-
+        # Apply pagination and return results
         return query.offset(skip).limit(limit).all()
     
     @staticmethod
+    def get_course(db: Session, course_id: str) -> Optional[Course]:
+        """Get a single course by ID with prerequisites"""
+        return db.query(Course).options(joinedload(Course.prerequisites)).filter(
+            Course.id == course_id,
+            Course.is_active
+        ).first()
+    
+    @staticmethod
     def create_course(db: Session, course: CourseCreate) -> Course:
-        # Check if course already exists
-        if CourseService.get_course(db, course.id):
-            raise HTTPException(status_code=400, detail="Course already exist")
-
-        # Create course without prereqs first
+        """Create a new course"""
+        # Extract prerequisite IDs
+        prerequisite_ids = course.prerequisite_ids
         course_data = course.dict(exclude={'prerequisite_ids'})
-        db_course = Course(**course_data)
-
-        # Add prereqs
-        if course.prerequisite_ids:
-            prerequisites = db.query(Course).filter(
-                Course.id.in_(course.prerequisite_ids)
-            ).all()
-            db_course.prerequisites = prerequisites
         
+        # Create course
+        db_course = Course(**course_data)
         db.add(db_course)
+        db.flush()  # Flush to get the ID
+        
+        # Add prerequisites
+        if prerequisite_ids:
+            prerequisites = db.query(Course).filter(Course.id.in_(prerequisite_ids)).all()
+            db_course.prerequisites.extend(prerequisites)
+        
         db.commit()
         db.refresh(db_course)
         return db_course
     
     @staticmethod
-    def update_course(db: Session, course_id: str, course_update: CourseUpdate) -> Course:
-    
+    def update_course(db: Session, course_id: str, course_update: CourseUpdate) -> Optional[Course]:
+        """Update an existing course"""
         db_course = CourseService.get_course(db, course_id)
         if not db_course:
-            raise HTTPException(status_code=404, detail="Course not found")
+            return None
         
-        # Update fields
-        update_data = course_update.dict(exclude_unset=True, exclude={'prerequisite_ids'})
+        # Extract prerequisite IDs if provided
+        prerequisite_ids = course_update.prerequisite_ids
+        update_data = course_update.dict(exclude={'prerequisite_ids'}, exclude_unset=True)
+        
+        # Update course fields
         for field, value in update_data.items():
             setattr(db_course, field, value)
         
         # Update prerequisites if provided
-        if course_update.prerequisite_ids is not None:
-            prerequisites = db.query(Course).filter(
-                Course.id.in_(course_update.prerequisite_ids)
-            ).all()
-            db_course.prerequisites = prerequisites
+        if prerequisite_ids is not None:
+            # Clear existing prerequisites
+            db_course.prerequisites.clear()
+            # Add new prerequisites
+            if prerequisite_ids:
+                prerequisites = db.query(Course).filter(Course.id.in_(prerequisite_ids)).all()
+                db_course.prerequisites.extend(prerequisites)
         
         db.commit()
         db.refresh(db_course)
         return db_course
-        
+    
     @staticmethod
-    def get_course_dependencies(db: Session, course_id: str) -> dict:
-        """Get course with all its prerequisites as a graph structure"""
-        course = db.query(Course).options(
-            joinedload(Course.prerequisites)
-        ).filter(Course.id == course_id).first()
-        
+    def get_course_dependencies(db: Session, course_id: str):
+        """Get course dependency graph for visualization"""
+        course = CourseService.get_course(db, course_id)
         if not course:
-            raise HTTPException(status_code=404, detail="Course not found")
+            return None
         
         # Build dependency graph
         nodes = []
         edges = []
         visited = set()
-
-        # Starts with given course IN2040, finds prereq IN1010, then finds prereq of that: IN1000, recursively
-        def add_node_and_prereqs(course, depth=0):
-            if course.id in visited or depth > 3:  # Limit depth
+        
+        def add_course_to_graph(current_course, depth=0):
+            if current_course.id in visited or depth > 3:  # Prevent infinite loops
                 return
             
-            visited.add(course.id)
+            visited.add(current_course.id)
             
-            # Add node
+            # Add current course as node
             nodes.append({
-                "id": course.id,
-                "label": f"{course.id}\n{course.title}",
-                "title": course.title,
-                "credits": course.credits,
-                "department": course.department,
-                "level": course.level.value,
-                "depth": depth
+                "id": current_course.id,
+                "label": current_course.title,
+                "department": current_course.department,
+                "credits": current_course.credits,
+                "level": current_course.level
             })
             
-            # Add edges and recursive prerequisites
-            for prereq in course.prerequisites:
+            # Add prerequisites recursively
+            for prereq in current_course.prerequisites:
+                # Add prerequisite as node
+                if prereq.id not in visited:
+                    add_course_to_graph(prereq, depth + 1)
+                
+                # Add edge from prerequisite to current course
                 edges.append({
                     "source": prereq.id,
-                    "target": course.id,
+                    "target": current_course.id,
                     "type": "prerequisite"
                 })
-                add_node_and_prereqs(prereq, depth + 1)
         
-        add_node_and_prereqs(course)
+        # Start building graph from the requested course
+        add_course_to_graph(course)
         
         return {
-            "course": course.id,
             "nodes": nodes,
             "edges": edges
         }

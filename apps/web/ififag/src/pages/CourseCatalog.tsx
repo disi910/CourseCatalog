@@ -1,117 +1,154 @@
-import { useState, useEffect, useMemo } from 'react';
-import { api } from '../services/api';
+import { useState, useEffect } from 'react';
 import { CourseCard } from '../components/CourseCard';
 import { CourseFilters } from '../components/CourseFilters';
 import { SearchBar } from '../components/SearchBar';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import { ErrorMessage } from '../components/ErrorMessage';
+import { api } from '../services/api';
+
+interface Course {
+  id: string;
+  title: string;
+  title_english: string;
+  description: string;
+  credits: number;
+  level: string;
+  semester: string[];
+  language: string;
+  prerequisites: any[];
+  instructor?: string;
+  exam_form: string;
+  teaching_form: string;
+}
+
+interface FilterOptions {
+  department?: string;
+  level?: string;
+  language?: string;
+  semester?: string;
+}
 
 interface CourseCatalogProps {
-  onCourseSelect?: (courseId: string) => void;
+  onCourseSelect: (courseId: string) => void;
 }
 
 export const CourseCatalog = ({ onCourseSelect }: CourseCatalogProps) => {
-  // State management
-  const [courses, setCourses] = useState<any[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState({});
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filters, setFilters] = useState<FilterOptions>({});
 
-  // Fetch courses when filters change
+  // Fetch courses whenever filters or search query changes
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         setLoading(true);
         setError(null);
-        const data = await api.getCourses(filters);
-        setCourses(data);
+        
+        const searchFilters = {
+          ...filters,
+          search: searchQuery || undefined
+        };
+        
+        const coursesData = await api.getCourses(searchFilters);
+        setCourses(coursesData);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Kunne ikke hente emner');
+        setError('Kunne ikke laste emner. Prøv igjen senere.');
+        console.error('Error fetching courses:', err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchCourses();
-  }, [filters]); // Dependency array - re-run when filters change
+  }, [filters, searchQuery]);
 
-  // Client-side search filtering
-  const filteredCourses = useMemo(() => {
-    if (!searchTerm) return courses;
-    
-    const searchLower = searchTerm.toLowerCase();
-    return courses.filter(course => 
-      course.id.toLowerCase().includes(searchLower) ||
-      course.title.toLowerCase().includes(searchLower) ||
-      course.title_english?.toLowerCase().includes(searchLower) ||
-      course.description?.toLowerCase().includes(searchLower)
-    );
-  }, [courses, searchTerm]); // Recalculate when courses or searchTerm change
-
-  // Handle course click
-  const handleCourseClick = (course: any) => {
-    if (onCourseSelect) {
-      onCourseSelect(course.id);
-    }
-    console.log('Course clicked:', course);
-    // TODO: Navigate to course detail page or show modal
+  // Handle filter changes
+  const handleFilterChange = (newFilters: FilterOptions) => {
+    setFilters(newFilters);
   };
 
-  // Render states
-  if (loading) return <LoadingSpinner />;
-  if (error) return <ErrorMessage message={error} />;
+  // Handle search
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Emnekatalog - Institutt for informatikk
-          </h1>
-          <p className="text-gray-600">
-            Bla gjennom og søk i emner ved Institutt for informatikk, UiO
-          </p>
+    <>
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Emnesøk</h1>
+        <p className="text-gray-600">
+          Søk og filtrer blant alle emner ved Institutt for Informatikk
+        </p>
+      </div>
+
+      {/* Search Bar */}
+      <SearchBar
+        value={searchQuery}
+        onChange={handleSearchChange}
+        placeholder="Søk etter emner (emnekode, tittel, beskrivelse)..."
+      />
+
+      {/* Filters */}
+      <CourseFilters
+        filters={filters}
+        onFilterChange={handleFilterChange}
+      />
+
+      {/* Results */}
+      {loading && (
+        <div className="text-center py-12">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <p className="mt-2 text-gray-600">Laster emner...</p>
         </div>
-        
-        {/* Search */}
-        <SearchBar 
-          value={searchTerm} 
-          onChange={setSearchTerm}
-          placeholder="Søk etter emnekode, tittel eller beskrivelse..."
-        />
-        
-        {/* Filters */}
-        <CourseFilters 
-          filters={filters} 
-          onFilterChange={setFilters} 
-        />
-        
-        {/* Results count */}
-        <div className="mb-4 text-gray-600">
-          Viser {filteredCourses.length} av {courses.length} emner
+      )}
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+          <div className="flex">
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">Feil</h3>
+              <div className="mt-2 text-sm text-red-700">
+                <p>{error}</p>
+              </div>
+            </div>
+          </div>
         </div>
-        
-        {/* Course grid */}
-        {filteredCourses.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">
-              Ingen emner funnet. Prøv å justere filtrene eller søket.
+      )}
+
+      {!loading && !error && (
+        <>
+          {/* Results count */}
+          <div className="mb-6">
+            <p className="text-gray-600">
+              Fant <span className="font-semibold">{courses.length}</span> emner
             </p>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCourses.map((course) => (
-              <CourseCard
-                key={course.id}
-                course={course}
-                onClick={() => handleCourseClick(course)}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+
+          {/* Course grid */}
+          {courses.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {courses.map((course) => (
+                <CourseCard
+                  key={course.id}
+                  course={course}
+                  onClick={() => onCourseSelect(course.id)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="text-gray-400 text-6xl mb-4">📚</div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Ingen emner funnet
+              </h3>
+              <p className="text-gray-500">
+                Prøv å justere søkekriteriene eller filtrene dine.
+              </p>
+            </div>
+          )}
+        </>
+      )}
+    </>
   );
 };

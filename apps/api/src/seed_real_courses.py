@@ -4,7 +4,7 @@ from datetime import datetime
 
 models.Base.metadata.create_all(bind=engine)
 
-courses_data = [
+all_courses_data = [
     {
         "id": "IN1000",
         "title": "Introduksjon til objektorientert programmering",
@@ -116,11 +116,7 @@ courses_data = [
         "teaching_form": "4 timer forelesning og 2 timer øvelser",
         "weekly_hours": 6,
         "prerequisite_ids": ["IN2090"]
-    }
-]
-
-
-courses_data_two = [
+    },
     {
         "id": "IN1030",
         "title": "Systemer, krav og konsekvenser",
@@ -248,10 +244,7 @@ courses_data_two = [
         "teaching_form": "2 timer forelesninger og 2 timer øvingsgrupper hver uke",
         "weekly_hours": 4,
         "prerequisite_ids": ["IN1050", "IN1060"]
-    }
-]
-
-courses_data_three = [
+    },
     {
         "id": "IN2031",
         "title": "Prosjektoppgave i programmering",
@@ -446,57 +439,87 @@ courses_data_three = [
     }
 ]
 
-
 def seed_real_courses():
     """Seed database with real UiO course data"""
     db = SessionLocal()
     
     try:
-        # Check if courses already exist
-        #existing_courses = db.query(models.Course).count()
-        #if existing_courses > 0:
-        #    print(f"Database already contains {existing_courses} courses. Skipping seed.")
-        #    return
-
-        # First, create all courses without prerequisites
+        print("Starting to seed courses...")
         
+        # First, create all courses without prerequisites
         course_objects = {}
-        """
-        for course_data in courses_data_three:
-            # Extract prerequisite_ids for later
+        
+        for course_data in all_courses_data:
+            # Check if course already exists
+            existing_course = db.query(models.Course).filter(models.Course.id == course_data["id"]).first()
+            if existing_course:
+                print(f"Course {course_data['id']} already exists, skipping...")
+                course_objects[course_data["id"]] = (existing_course, course_data.get('prerequisite_ids', []))
+                continue
+            
+            # Extract prerequisite_ids for later processing
             prereq_ids = course_data.pop('prerequisite_ids', [])
             
             # Create course
             course = models.Course(**course_data)
             db.add(course)
             course_objects[course.id] = (course, prereq_ids)
+            print(f"Created course: {course.id}")
         
-        # Commit to save courses
+        # Commit to save all courses first
         db.commit()
-        print(f"Created {len(courses_data_three)} courses")
-        """
+        print(f"Committed {len(course_objects)} courses to database")
+        
         # Now add prerequisites
+        print("Adding prerequisites...")
+        prerequisite_count = 0
+        
         for course_id, (course, prereq_ids) in course_objects.items():
             for prereq_id in prereq_ids:
-                if prereq_id in course_objects:
-                    prereq_course = course_objects[prereq_id][0]
-                    course.prerequisites.append(prereq_course)
-                    print(f"Added {prereq_id} as prerequisite for {course_id}")
+                # Find the prerequisite course
+                prereq_course = db.query(models.Course).filter(models.Course.id == prereq_id).first()
+                if prereq_course:
+                    # Check if relationship already exists
+                    if prereq_course not in course.prerequisites:
+                        course.prerequisites.append(prereq_course)
+                        prerequisite_count += 1
+                        print(f"Added {prereq_id} as prerequisite for {course_id}")
+                    else:
+                        print(f"Prerequisite {prereq_id} already exists for {course_id}")
+                else:
+                    print(f"Warning: Prerequisite course {prereq_id} not found for {course_id}")
         
         # Commit prerequisites
         db.commit()
-        print("Successfully seeded database with real UiO courses!")
+        print(f"Successfully added {prerequisite_count} prerequisite relationships!")
         
         # Print summary
-        print("\nCourse Summary:")
-        for course_id, (course, prereqs) in course_objects.items():
-            print(f"- {course_id}: {course.title} ({course.credits} credits)")
-            if prereqs:
-                print(f"  Prerequisites: {', '.join(prereqs)}")
+        print("\n" + "="*50)
+        print("SEEDING SUMMARY")
+        print("="*50)
+        
+        total_courses = db.query(models.Course).filter(models.Course.is_active == True).count()
+        print(f"Total active courses in database: {total_courses}")
+        
+        print("\nCourses with prerequisites:")
+        for course_id, (course, prereq_ids) in course_objects.items():
+            if prereq_ids:
+                # Refresh course to get updated prerequisites
+                db.refresh(course)
+                actual_prereqs = [p.id for p in course.prerequisites]
+                print(f"- {course_id}: {course.title}")
+                print(f"  Expected prerequisites: {prereq_ids}")
+                print(f"  Actual prerequisites: {actual_prereqs}")
+                if set(prereq_ids) != set(actual_prereqs):
+                    print(f"  ⚠️  MISMATCH!")
+                print()
+        
+        print("Seeding completed successfully! 🎉")
         
     except Exception as e:
         print(f"Error seeding database: {e}")
         db.rollback()
+        raise
     finally:
         db.close()
 

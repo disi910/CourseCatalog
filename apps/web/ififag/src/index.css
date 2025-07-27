@@ -27,8 +27,6 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -68,4 +66,22 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+/* Make sure React Flow works properly */
+.react-flow__renderer {
+  width: 100%;
+  height: 100%;
+}
+
+.react-flow__controls {
+  bottom: 10px;
+  right: 10px;
+}
+
+/* Course selector styling */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

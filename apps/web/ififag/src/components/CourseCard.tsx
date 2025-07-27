@@ -8,7 +8,7 @@ interface Course {
     level: string;
     semester: string[];
     language: string;
-    prerequisites: string[];
+    prerequisites: any[];
     instructor?: string;
     exam_form: string;
     teaching_form: string; 
@@ -21,7 +21,7 @@ interface CourseCardProps {
 
 export const CourseCard = ({ course, onClick }: CourseCardProps) => {
     return (
-        <div className="bgwhite roundedlg shadowmd p-6 hover:shadow-lg transition-shadow cursor-pointer"
+        <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
         onClick={onClick}
         >
         {/* Course Header */}
