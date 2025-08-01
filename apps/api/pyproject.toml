@@ -1,6 +1,7 @@
 [project]
 name = "ififag"
 version = "0.1.0"
+package-mode = false 
 description = "Course visualisation for Insititute of Informatics at the University of Oslo"
 authors = [
     {name = "Your Name",email = "you@example.com"}
