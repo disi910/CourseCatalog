@@ -26,8 +26,7 @@ const CourseNode: React.FC<NodeProps<CourseNodeData>> = ({ data, selected }) => 
                 <div className='course-badge'>{data.id}</div>
                 <div className='course-title'>{data.title}</div>
                 <div className='course-meta'>
-                    <span className='credits'>{data.credits} credits</span>
-                    <span className='department'>{data.department}</span>
+                    <span className='credits'>{data.credits} studiepoeng</span>
                 </div>
             </div>
             

@@ -3,7 +3,7 @@ from sqlalchemy import Column, String, Integer, Text, ARRAY, Enum, DateTime, Boo
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 import enum
-from .database import Base
+from database import Base
 
 # Enum for course levels
 class CourseLevel(str, enum.Enum):

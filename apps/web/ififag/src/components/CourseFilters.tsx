@@ -37,6 +37,7 @@ export const CourseFilters = ({ filters, onFilterChange }: CourseFiltersProps) =
             <option value="">Alle institutter</option>
             <option value="Informatics">Informatikk</option>
             <option value="Mathematics">Matematikk</option>
+            <option value="Economics">Økonomi</option>
           </select>
         </div>
         
