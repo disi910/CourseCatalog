@@ -17,7 +17,7 @@ config = context.config
 # Override the sqlalchemy.url with environment variable
 database_url = os.getenv(
     "DATABASE_URL",
-    "postgresql://postgres:Didrik2004.@localhost:5433/course_catalog"
+    "postgresql://didriksivertsen@localhost/coursecatalog"
 )
 config.set_main_option("sqlalchemy.url", database_url)
 

@@ -15,8 +15,6 @@ function App() {
 
   const handleEmnekartClick = () => {
     setCurrentView('map');
-    // TODO: Implement course map view
-    console.log('Emnekart clicked - not implemented yet');
   };
 
   const handleBackToHome = () => {
@@ -25,97 +23,90 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="retro-page">
+      {/* Retro marquee banner */}
+      <div className="retro-marquee">
+        <marquee scrollamount={3}>
+          *** Velkommen til Institutt for Informatikk - Universitetet i Oslo *** Oppdatert med de nyeste emnene for 2025/2026 ***
+        </marquee>
+      </div>
+
       {currentView === 'home' && (
-        <div className="container mx-auto px-4 py-8">
-          {/* Centered content container */}
-          <div className="flex flex-col items-center justify-center min-h-[80vh] max-w-4xl mx-auto">
+        <div className="retro-container">
+          <div className="retro-center">
             {/* Logo */}
-            <div className="mb-8">
+            <div className="mb-4">
               <img
-                src="/ifi.png" // You'll need to add this to your public folder
+                src="/ifi.png"
                 alt="Institutt for Informatikk Logo"
-                className="h-24 w-auto object-contain"
+                className="retro-home-logo"
                 onError={(e) => {
-                  // Fallback if image doesn't exist
                   e.currentTarget.style.display = 'none';
                   e.currentTarget.nextElementSibling!.classList.remove('hidden');
                 }}
               />
-              {/* Fallback placeholder if image doesn't load */}
-              <div className="hidden h-24 w-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                <span className="text-gray-500 text-sm">IFI Logo</span>
+              <div className="hidden" style={{height: '80px', width: '160px', backgroundColor: '#e8e8e8', border: '2px inset #c0c0c0', alignItems: 'center', justifyContent: 'center', color: '#666', fontSize: '11px'}}>
+                <span>IFI Logo</span>
               </div>
             </div>
 
             {/* Title */}
-            <p className="text-2xl md:text-2xl text-gray-900 text-center mb-12">
+            <p className="retro-home-subtitle">
               Utforsk emner ved Institutt for Informatikk
             </p>
 
             {/* Buttons */}
-            <div className="flex gap-8 justify-center">
-              <button
-                onClick={handleEmnesokClick}
-                className="px-8 py-4 bg-blue-600 text-gray-900 text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
-              >
+            <div className="retro-home-buttons">
+              <button onClick={handleEmnesokClick} className="btn-primary">
                 Emnesøk
               </button>
-              <button
-                onClick={handleEmnekartClick}
-                className="px-8 py-4 bg-green-600 text-gray-900 text-lg font-semibold rounded-lg hover:bg-green-700 transition-colors shadow-md hover:shadow-lg"
-              >
+              <button onClick={handleEmnekartClick} className="btn-secondary">
                 Emnekart
               </button>
+            </div>
+
+            {/* Visitor counter */}
+            <div className="retro-counter">
+              Du er besøkende nr.{' '}
+              <span style={{fontFamily: 'Courier New, monospace', fontWeight: 'bold'}}>
+                004,831
+              </span>{' '}
+              siden 01.01.2002
             </div>
           </div>
         </div>
       )}
 
       {currentView === 'catalog' && (
-        <div className="min-h-screen flex justify-center bg-gray-50">
-          <div className="w-full max-w-7xl px-4 py-8">
-            {/* Back button */}
-            <button
-              onClick={handleBackToHome}
-              className="mb-6 flex items-center text-blue-600 hover:text-blue-800 transition-colors"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Tilbake til hovedside
-            </button>
-
-            <CourseCatalog 
-              onCourseSelect={(courseId) => setSelectedCourseId(courseId)} 
-            />
-          </div>
+        <div className="retro-container-wide">
+          <button onClick={handleBackToHome} className="btn-back">
+            &laquo; Tilbake til hovedside
+          </button>
+          <CourseCatalog
+            onCourseSelect={(courseId) => setSelectedCourseId(courseId)}
+          />
         </div>
       )}
+
       {currentView === 'map' && (
-        <div className="min-h-screen flex justify-center bg-gray-50">
-          <div className="w-full max-w-7xl px-4 py-8">
-            {/* Back button */}
-            <button
-              onClick={handleBackToHome}
-              className="mb-6 flex items-center text-blue-600 hover:text-blue-800 transition-colors"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Tilbake til hovedside
-            </button>
-
-            <CourseMap />
-          </div>
+        <div className="retro-container-wide">
+          <button onClick={handleBackToHome} className="btn-back">
+            &laquo; Tilbake til hovedside
+          </button>
+          <CourseMap />
         </div>
       )}
-      
+
       <CourseDetailModal
         courseId={selectedCourseId}
         isOpen={!!selectedCourseId}
         onClose={() => setSelectedCourseId(null)}
       />
+
+      {/* Retro status bar */}
+      <div className="retro-status-bar">
+        Sist oppdatert: Mars 2026 | Institutt for Informatikk, UiO | Best viewed in Internet Explorer 6.0 at 1024x768
+      </div>
     </div>
   );
 }

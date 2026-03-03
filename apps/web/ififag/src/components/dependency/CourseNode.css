@@ -1,65 +1,66 @@
+/* CourseNode.css - Retro ReactFlow Nodes */
+
 .course-node {
-  background: white;
-  border: 2px solid black;
-  border-radius: 12px;
-  padding: 16px;
-  min-width: 200px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
+  background: #ffffff;
+  border: 2px solid #003366;
+  padding: 10px;
+  min-width: 180px;
 }
 
 .course-node.selected {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #008080;
+  background-color: #ffffcc;
 }
 
 .course-badge {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  color: white;
-  padding: 4px 12px;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 14px;
+  background: #003366;
+  color: #ffffff;
+  padding: 2px 8px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 12px;
   display: inline-block;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  border: 1px outset #0055aa;
 }
 
 .handle {
-  width: 10px;
-  height: 10px;
-  border: 2px solid #3b82f6;
-  background: white;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #008080;
+  background: #ffffff;
 }
 
 .handle-target {
-  top: -5px;
+  top: -4px;
 }
 
 .handle-source {
-  bottom: -5px;
+  bottom: -4px;
 }
 
 .course-content {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 .course-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #374151;
+  font-family: Verdana, Tahoma, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000000;
   line-height: 1.4;
 }
 
 .course-meta {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: 12px;
-  color: #6b7280;
+  gap: 2px;
+  font-size: 10px;
+  color: #666666;
 }
 
 .credits, .department {
-  font-weight: 500;
+  font-weight: bold;
 }
