@@ -34,7 +34,6 @@ export const DependencyVisualization: React.FC<DependencyVisualizationProps> = (
 
   const { nodes: graphNodes, edges: graphEdges, loading, error } = useDependencyGraph(courseId);
 
-  // Update nodes and edges when graph data changes
   useEffect(() => {
     if (graphNodes && graphEdges) {
       setNodes(graphNodes);
@@ -56,10 +55,12 @@ export const DependencyVisualization: React.FC<DependencyVisualizationProps> = (
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="mt-2 text-gray-600">Laster avhengigheter...</p>
+          <div className="retro-loading-indicator">
+            <span className="retro-blink">*** Loading ***</span>
+          </div>
+          <p className="mt-2" style={{color: '#666'}}>Laster avhengigheter...</p>
         </div>
       </div>
     );
@@ -67,10 +68,10 @@ export const DependencyVisualization: React.FC<DependencyVisualizationProps> = (
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center text-red-600">
-          <p>Feil ved lasting av avhengigheter</p>
-          <p className="text-sm">{error}</p>
+      <div style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <div className="retro-error" style={{textAlign: 'center'}}>
+          <p className="retro-error-title">Feil ved lasting av avhengigheter</p>
+          <p>{error}</p>
         </div>
       </div>
     );
@@ -90,19 +91,17 @@ export const DependencyVisualization: React.FC<DependencyVisualizationProps> = (
         fitView
         attributionPosition="bottom-left"
       >
-        <Background color="#f1f5f9" gap={16} />
+        <Background color="#cccccc" gap={16} />
         <Controls />
-        
+
         <Panel position="top-right">
-          <div className="bg-white p-3 rounded-lg shadow-lg">
-            <h4 className="font-semibold text-sm mb-2">Emnekart</h4>
-            <p className="text-xs text-gray-600 mb-2">
-              Klikk på emner for å utforske
-            </p>
+          <div className="retro-flow-panel">
+            <h4>Emnekart</h4>
+            <p>Klikk på emner for å utforske</p>
             {selectedNode && (
-              <div className="text-xs">
-                <span className="font-medium">Valgt: </span>
-                <span className="text-blue-600">{selectedNode}</span>
+              <div style={{fontSize: '10px', marginTop: '4px'}}>
+                <span style={{fontWeight: 'bold'}}>Valgt: </span>
+                <span style={{fontFamily: 'Courier New, monospace', color: '#003366'}}>{selectedNode}</span>
               </div>
             )}
           </div>

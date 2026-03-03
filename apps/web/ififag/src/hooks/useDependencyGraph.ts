@@ -63,9 +63,9 @@ const transformToEdges = (apiEdges: any[]): Edge[] => {
     id: `${edge.source}-${edge.target}`,
     source: edge.source,
     target: edge.target,
-    type: 'smoothstep', // Built-in edge type
-    animated: true,
-    style: { stroke: '#3b82f6', strokeWidth: 2 },
+    type: 'step', // Angular edges for retro feel
+    animated: false, // No animation for retro feel
+    style: { stroke: '#003366', strokeWidth: 2 },
   }));
 };
 

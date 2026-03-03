@@ -37,18 +37,17 @@ export const CourseCatalog = ({ onCourseSelect }: CourseCatalogProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<FilterOptions>({});
 
-  // Fetch courses whenever filters or search query changes
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         setLoading(true);
         setError(null);
-        
+
         const searchFilters = {
           ...filters,
           search: searchQuery || undefined
         };
-        
+
         const coursesData = await api.getCourses(searchFilters);
         setCourses(coursesData);
       } catch (err) {
@@ -62,12 +61,10 @@ export const CourseCatalog = ({ onCourseSelect }: CourseCatalogProps) => {
     fetchCourses();
   }, [filters, searchQuery]);
 
-  // Handle filter changes
   const handleFilterChange = (newFilters: FilterOptions) => {
     setFilters(newFilters);
   };
 
-  // Handle search
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
   };
@@ -75,59 +72,50 @@ export const CourseCatalog = ({ onCourseSelect }: CourseCatalogProps) => {
   return (
     <>
       {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Emnesøk</h1>
-        <p className="text-gray-600">
+      <div className="text-center mb-4">
+        <h1>Emnesøk</h1>
+        <p style={{color: '#666', fontSize: '12px'}}>
           Søk og filtrer blant alle emner ved Institutt for Informatikk
         </p>
       </div>
 
-      {/* Search Bar */}
       <SearchBar
         value={searchQuery}
         onChange={handleSearchChange}
         placeholder="Søk etter emner (emnekode, tittel, beskrivelse)..."
       />
 
-      {/* Filters */}
       <CourseFilters
         filters={filters}
         onFilterChange={handleFilterChange}
       />
 
-      {/* Results */}
+      {/* Loading */}
       {loading && (
-        <div className="text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="mt-2 text-gray-600">Laster emner...</p>
+        <div className="retro-loading">
+          <div className="retro-loading-indicator">
+            <span className="retro-blink">*** Loading ***</span>
+          </div>
+          <p className="mt-2">Laster emner...</p>
         </div>
       )}
 
+      {/* Error */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
-          <div className="flex">
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">Feil</h3>
-              <div className="mt-2 text-sm text-red-700">
-                <p>{error}</p>
-              </div>
-            </div>
-          </div>
+        <div className="retro-error">
+          <div className="retro-error-title">!! Feil !!</div>
+          <p>{error}</p>
         </div>
       )}
 
       {!loading && !error && (
         <>
-          {/* Results count */}
-          <div className="mb-6">
-            <p className="text-gray-600">
-              Fant <span className="font-semibold">{courses.length}</span> emner
-            </p>
+          <div className="retro-results-count">
+            Fant <strong>{courses.length}</strong> emner
           </div>
 
-          {/* Course grid */}
           {courses.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="retro-grid">
               {courses.map((course) => (
                 <CourseCard
                   key={course.id}
@@ -137,14 +125,9 @@ export const CourseCatalog = ({ onCourseSelect }: CourseCatalogProps) => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <div className="text-gray-400 text-6xl mb-4">📚</div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Ingen emner funnet
-              </h3>
-              <p className="text-gray-500">
-                Prøv å justere søkekriteriene eller filtrene dine.
-              </p>
+            <div className="retro-empty">
+              <p><strong>Ingen emner funnet</strong></p>
+              <p>Prøv å justere søkekriteriene eller filtrene dine.</p>
             </div>
           )}
         </>
