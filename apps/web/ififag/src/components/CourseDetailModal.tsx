@@ -51,9 +51,9 @@ export const CourseDetailModal = ({ courseId, isOpen, onClose }: CourseDetailMod
           </div>
 
           {/* Content */}
-          <div className="retro-modal-body">
+          <div className="retro-modal-body" style={{minHeight: '300px'}}>
             {loading ? (
-              <div className="retro-loading">
+              <div className="retro-loading" style={{minHeight: '280px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
                 <span className="retro-blink">Laster...</span>
               </div>
             ) : (

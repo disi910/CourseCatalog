@@ -90,48 +90,44 @@ export const CourseCatalog = ({ onCourseSelect }: CourseCatalogProps) => {
         onFilterChange={handleFilterChange}
       />
 
-      {/* Loading */}
-      {loading && (
-        <div className="retro-loading">
-          <div className="retro-loading-indicator">
-            <span className="retro-blink">*** Loading ***</span>
+      {/* Results area — always rendered to prevent layout shift */}
+      <div style={{minHeight: '200px'}}>
+        {/* Error */}
+        {error && (
+          <div className="retro-error">
+            <div className="retro-error-title">!! Feil !!</div>
+            <p>{error}</p>
           </div>
-          <p className="mt-2">Laster emner...</p>
-        </div>
-      )}
+        )}
 
-      {/* Error */}
-      {error && (
-        <div className="retro-error">
-          <div className="retro-error-title">!! Feil !!</div>
-          <p>{error}</p>
+        <div className="retro-results-count">
+          Fant <strong>{loading ? '...' : courses.length}</strong> emner
         </div>
-      )}
 
-      {!loading && !error && (
-        <>
-          <div className="retro-results-count">
-            Fant <strong>{courses.length}</strong> emner
+        {loading ? (
+          <div className="retro-loading">
+            <div className="retro-loading-indicator">
+              <span className="retro-blink">*** Loading ***</span>
+            </div>
+            <p className="mt-2">Laster emner...</p>
           </div>
-
-          {courses.length > 0 ? (
-            <div className="retro-grid">
-              {courses.map((course) => (
-                <CourseCard
-                  key={course.id}
-                  course={course}
-                  onClick={() => onCourseSelect(course.id)}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="retro-empty">
-              <p><strong>Ingen emner funnet</strong></p>
-              <p>Prøv å justere søkekriteriene eller filtrene dine.</p>
-            </div>
-          )}
-        </>
-      )}
+        ) : courses.length > 0 ? (
+          <div className="retro-grid">
+            {courses.map((course) => (
+              <CourseCard
+                key={course.id}
+                course={course}
+                onClick={() => onCourseSelect(course.id)}
+              />
+            ))}
+          </div>
+        ) : !error ? (
+          <div className="retro-empty">
+            <p><strong>Ingen emner funnet</strong></p>
+            <p>Prøv å justere søkekriteriene eller filtrene dine.</p>
+          </div>
+        ) : null}
+      </div>
     </>
   );
 };
