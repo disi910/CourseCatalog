@@ -26,9 +26,9 @@ function App() {
     <div className="retro-page">
       {/* Retro marquee banner */}
       <div className="retro-marquee">
-        <marquee scrollamount={3}>
+        <div className="retro-marquee-text">
           *** Velkommen til Institutt for Informatikk - Universitetet i Oslo *** Oppdatert med de nyeste emnene for 2025/2026 ***
-        </marquee>
+        </div>
       </div>
 
       {currentView === 'home' && (
@@ -65,14 +65,6 @@ function App() {
               </button>
             </div>
 
-            {/* Visitor counter */}
-            <div className="retro-counter">
-              Du er besøkende nr.{' '}
-              <span style={{fontFamily: 'Courier New, monospace', fontWeight: 'bold'}}>
-                004,831
-              </span>{' '}
-              siden 01.01.2002
-            </div>
           </div>
         </div>
       )}
@@ -105,7 +97,7 @@ function App() {
 
       {/* Retro status bar */}
       <div className="retro-status-bar">
-        Sist oppdatert: Mars 2026 | Institutt for Informatikk, UiO | Best viewed in Internet Explorer 6.0 at 1024x768
+        Sist oppdatert: Mars 2026 | Institutt for Informatikk, UiO
       </div>
     </div>
   );
