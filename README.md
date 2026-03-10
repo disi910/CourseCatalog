@@ -2,6 +2,8 @@
 
 A web application for browsing and visualizing courses at the Institute of Informatics (Institutt for Informatikk) at the University of Oslo.
 
+Hosted at https://didriksi.com
+
 ## Features
 
 - **Course Search** — Search and filter courses by department, level, language, and semester
