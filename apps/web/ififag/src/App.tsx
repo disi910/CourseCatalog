@@ -3,19 +3,9 @@ import { CourseCatalog } from './pages/CourseCatalog';
 import { CourseDetailModal } from './components/CourseDetailModal';
 import { CourseMap } from './pages/CourseMap';
 
-
-
 function App() {
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<'home' | 'catalog' | 'map'>('home');
-
-  const handleEmnesokClick = () => {
-    setCurrentView('catalog');
-  };
-
-  const handleEmnekartClick = () => {
-    setCurrentView('map');
-  };
 
   const handleBackToHome = () => {
     setCurrentView('home');
@@ -57,10 +47,10 @@ function App() {
 
             {/* Buttons */}
             <div className="retro-home-buttons">
-              <button onClick={handleEmnesokClick} className="btn-primary">
+              <button onClick={() => setCurrentView('catalog')} className="btn-primary">
                 Emnesøk
               </button>
-              <button onClick={handleEmnekartClick} className="btn-secondary">
+              <button onClick={() => setCurrentView('map')} className="btn-secondary">
                 Emnekart
               </button>
             </div>

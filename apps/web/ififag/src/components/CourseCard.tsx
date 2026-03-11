@@ -1,3 +1,4 @@
+import type { CoursePrerequisite } from '../types';
 
 interface Course {
     id: string;
@@ -8,7 +9,7 @@ interface Course {
     level: string;
     semester: string[];
     language: string;
-    prerequisites: any[];
+    prerequisites: CoursePrerequisite[];
     instructor?: string;
     exam_form: string;
     teaching_form: string;
@@ -56,7 +57,7 @@ export const CourseCard = ({ course, onClick }: CourseCardProps) => {
             {course.prerequisites && course.prerequisites.length > 0 && (
                 <div style={{marginTop: '4px'}}>
                     <span className="meta-label" style={{fontSize: '11px'}}>Forkunnskaper: </span>
-                    {course.prerequisites.map((prereq: any) => (
+                    {course.prerequisites.map((prereq: CoursePrerequisite) => (
                         <span key={prereq.id} className="retro-badge retro-badge-prereq">
                             {prereq.id}
                         </span>

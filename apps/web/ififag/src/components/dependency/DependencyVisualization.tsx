@@ -1,5 +1,4 @@
-// apps/web/src/components/dependency/DependencyVisualization.tsx
-import React, { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   Controls,
@@ -9,7 +8,7 @@ import ReactFlow, {
   ConnectionMode,
   Panel,
 } from 'reactflow';
-import type { Node, Edge } from 'reactflow';
+import type { Node } from 'reactflow';
 import 'reactflow/dist/style.css';
 
 import CourseNode from './CourseNode';
@@ -24,10 +23,10 @@ interface DependencyVisualizationProps {
   onCourseClick?: (courseId: string) => void;
 }
 
-export const DependencyVisualization: React.FC<DependencyVisualizationProps> = ({
+export const DependencyVisualization = ({
   courseId,
   onCourseClick,
-}) => {
+}: DependencyVisualizationProps) => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
@@ -42,7 +41,7 @@ export const DependencyVisualization: React.FC<DependencyVisualizationProps> = (
   }, [graphNodes, graphEdges, setNodes, setEdges]);
 
   const onNodeClick = useCallback(
-    (event: React.MouseEvent, node: Node) => {
+    (_event: React.MouseEvent, node: Node) => {
       setSelectedNode(node.id);
       onCourseClick?.(node.id);
     },

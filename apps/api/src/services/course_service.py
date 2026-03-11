@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import and_, or_, func
+from sqlalchemy import or_, cast, String
 from typing import List, Optional
 from ..models import Course
 from ..schemas import CourseCreate, CourseUpdate
@@ -32,9 +32,8 @@ class CourseService:
         if language:
             query = query.filter(Course.language == language)
         
-        # Fix semester filtering - use ANY to check if semester exists in array
         if semester:
-            query = query.filter(Course.semester.any(semester))
+            query = query.filter(cast(Course.semester, String).contains(semester))
         
         # Search functionality - search across multiple fields
         if search:
@@ -65,7 +64,7 @@ class CourseService:
         """Create a new course"""
         # Extract prerequisite IDs
         prerequisite_ids = course.prerequisite_ids
-        course_data = course.dict(exclude={'prerequisite_ids'})
+        course_data = course.model_dump(exclude={'prerequisite_ids'})
         
         # Create course
         db_course = Course(**course_data)
@@ -90,7 +89,7 @@ class CourseService:
         
         # Extract prerequisite IDs if provided
         prerequisite_ids = course_update.prerequisite_ids
-        update_data = course_update.dict(exclude={'prerequisite_ids'}, exclude_unset=True)
+        update_data = course_update.model_dump(exclude={'prerequisite_ids'}, exclude_unset=True)
         
         # Update course fields
         for field, value in update_data.items():

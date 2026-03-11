@@ -1,30 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { CourseCard } from '../components/CourseCard';
 import { CourseFilters } from '../components/CourseFilters';
 import { SearchBar } from '../components/SearchBar';
 import { api } from '../services/api';
-
-interface Course {
-  id: string;
-  title: string;
-  title_english: string;
-  description: string;
-  credits: number;
-  level: string;
-  semester: string[];
-  language: string;
-  prerequisites: any[];
-  instructor?: string;
-  exam_form: string;
-  teaching_form: string;
-}
-
-interface FilterOptions {
-  department?: string;
-  level?: string;
-  language?: string;
-  semester?: string;
-}
+import type { Course, FilterOptions } from '../types';
 
 interface CourseCatalogProps {
   onCourseSelect: (courseId: string) => void;
@@ -35,19 +14,27 @@ export const CourseCatalog = ({ onCourseSelect }: CourseCatalogProps) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [filters, setFilters] = useState<FilterOptions>({});
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  // Debounce search input
+  useEffect(() => {
+    debounceRef.current = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 300);
+    return () => clearTimeout(debounceRef.current);
+  }, [searchQuery]);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         setLoading(true);
         setError(null);
-
         const searchFilters = {
           ...filters,
-          search: searchQuery || undefined
+          search: debouncedSearch || undefined
         };
-
         const coursesData = await api.getCourses(searchFilters);
         setCourses(coursesData);
       } catch (err) {
@@ -59,15 +46,7 @@ export const CourseCatalog = ({ onCourseSelect }: CourseCatalogProps) => {
     };
 
     fetchCourses();
-  }, [filters, searchQuery]);
-
-  const handleFilterChange = (newFilters: FilterOptions) => {
-    setFilters(newFilters);
-  };
-
-  const handleSearchChange = (query: string) => {
-    setSearchQuery(query);
-  };
+  }, [filters, debouncedSearch]);
 
   return (
     <>
@@ -81,13 +60,13 @@ export const CourseCatalog = ({ onCourseSelect }: CourseCatalogProps) => {
 
       <SearchBar
         value={searchQuery}
-        onChange={handleSearchChange}
+        onChange={setSearchQuery}
         placeholder="Søk etter emner (emnekode, tittel, beskrivelse)..."
       />
 
       <CourseFilters
         filters={filters}
-        onFilterChange={handleFilterChange}
+        onFilterChange={setFilters}
       />
 
       {/* Results area — always rendered to prevent layout shift */}
