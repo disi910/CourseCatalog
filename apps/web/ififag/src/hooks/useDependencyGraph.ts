@@ -1,11 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { Node } from 'reactflow';
-import type { Edge } from 'reactflow';
+import type { Node, Edge } from 'reactflow';
 import { api } from '../services/api';
+import type { DependencyNode, DependencyEdge } from '../types';
 
-// Data transformation logic
-// Creating a Custom Hook for Data Processing
-// Custom hook pattern for reusable logic?
 export const useDependencyGraph = (courseId: string | null) => {
     const [nodes, setNodes] = useState<Node[]>([]);
     const [edges, setEdges] = useState<Edge[]>([]);
@@ -19,20 +16,15 @@ export const useDependencyGraph = (courseId: string | null) => {
 
             const response = await api.getCourseDependencies(id);
 
-            // Transform API data to react flow format
-
-            const transformedNodes = transformToNodes(response.nodes);
-            const transformedEdges = transformToEdges(response.edges);
-
-            setNodes(transformedNodes);
-            setEdges(transformedEdges);
+            setNodes(transformToNodes(response.nodes));
+            setEdges(transformToEdges(response.edges));
         } catch(err) {
             setError('Failed to load dependencies');
             console.error(err);
         } finally {
             setLoading(false);
         }
-    }, []); // Empty dependency array means this function never changes
+    }, []);
 
     useEffect(() => {
         if (courseId) {
@@ -40,10 +32,10 @@ export const useDependencyGraph = (courseId: string | null) => {
         }
     }, [courseId, fetchDependencyData]);
 
-    return { nodes, edges, loading, error};
+    return { nodes, edges, loading, error };
 };
 
-const transformToNodes = (apiNodes: any[]): Node[] => {
+const transformToNodes = (apiNodes: DependencyNode[]): Node[] => {
     return apiNodes.map((node, index) => ({
         id: node.id,
         type: 'courseNode',
@@ -56,24 +48,22 @@ const transformToNodes = (apiNodes: any[]): Node[] => {
             level: node.level,
         },
     }));
-}
-
-const transformToEdges = (apiEdges: any[]): Edge[] => {
-  return apiEdges.map((edge) => ({
-    id: `${edge.source}-${edge.target}`,
-    source: edge.source,
-    target: edge.target,
-    type: 'step', // Angular edges for retro feel
-    animated: false, // No animation for retro feel
-    style: { stroke: '#003366', strokeWidth: 2 },
-  }));
 };
 
-// Algorithm for automatic layout
+const transformToEdges = (apiEdges: DependencyEdge[]): Edge[] => {
+    return apiEdges.map((edge) => ({
+        id: `${edge.source}-${edge.target}`,
+        source: edge.source,
+        target: edge.target,
+        type: 'step',
+        animated: false,
+        style: { stroke: '#003366', strokeWidth: 2 },
+    }));
+};
+
 const calculatePosition = (index: number, total: number) => {
     const radius = 300;
     const angle = (index / total) * 2 * Math.PI;
-
     return {
         x: Math.cos(angle) * radius,
         y: Math.sin(angle) * radius,

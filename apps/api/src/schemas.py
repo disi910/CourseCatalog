@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from typing import List, Optional
 from datetime import datetime
 from .models import CourseLevel, Semester
@@ -21,8 +21,9 @@ class CourseCreate(CourseBase):
     id: str = Field(..., pattern="^[A-Z]{2,4}[0-9]{4}$")  # Validates format like "IN1000"
     prerequisite_ids: List[str] = []
     
-    @validator('id')
-    def validate_course_id(cls, v):
+    @field_validator('id')
+    @classmethod
+    def validate_course_id(cls, v: str) -> str:
         if not v or len(v) < 5:
             raise ValueError('Course ID must be at least 5 characters')
         return v.upper()
@@ -48,7 +49,5 @@ class Course(CourseBase):
     is_active: bool
     created_at: datetime
     updated_at: Optional[datetime]
-    prerequisites: List['Course'] = []  # Nested courses
-    
-    class Config:
-        from_attributes = True
+    prerequisites: List['Course'] = []
+    model_config = ConfigDict(from_attributes=True)

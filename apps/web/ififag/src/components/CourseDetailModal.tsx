@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../services/api';
+import type { Course, DependencyGraph, DependencyNode } from '../types';
 
 interface CourseDetailModalProps {
   courseId: string | null;
@@ -8,8 +9,8 @@ interface CourseDetailModalProps {
 }
 
 export const CourseDetailModal = ({ courseId, isOpen, onClose }: CourseDetailModalProps) => {
-  const [course, setCourse] = useState<any>(null);
-  const [dependencies, setDependencies] = useState<any>(null);
+  const [course, setCourse] = useState<Course | null>(null);
+  const [dependencies, setDependencies] = useState<DependencyGraph | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -101,7 +102,7 @@ export const CourseDetailModal = ({ courseId, isOpen, onClose }: CourseDetailMod
                   </>
                 )}
 
-                {dependencies?.nodes?.length > 1 && (
+                {dependencies?.nodes && dependencies.nodes.length > 1 && (
                   <>
                     <hr />
                     <h4>Emneavhengigheter</h4>
@@ -110,8 +111,8 @@ export const CourseDetailModal = ({ courseId, isOpen, onClose }: CourseDetailMod
                         Dette emnet krever:
                       </p>
                       {dependencies.nodes
-                        .filter((n: any) => n.id !== courseId)
-                        .map((node: any) => (
+                        .filter((n: DependencyNode) => n.id !== courseId)
+                        .map((node: DependencyNode) => (
                           <div key={node.id} style={{marginLeft: '12px', fontSize: '12px', fontFamily: 'Courier New, monospace'}}>
                             &rarr; {node.id}: {node.label}
                           </div>

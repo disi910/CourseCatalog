@@ -1,9 +1,9 @@
 
-from sqlalchemy import Column, String, Integer, Text, ARRAY, Enum, DateTime, Boolean, Table, ForeignKey
+from sqlalchemy import Column, String, Integer, Text, JSON, Enum, DateTime, Boolean, Table, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 import enum
-from src.database import Base
+from .database import Base
 
 # Enum for course levels
 class CourseLevel(str, enum.Enum):
@@ -49,8 +49,8 @@ class Course(Base):
     department = Column(String, nullable=False, index=True)
     level = Column(Enum(CourseLevel), nullable=False, index=True)
 
-    # When offered    
-    semester = Column(ARRAY(Enum(Semester)), default=[])  # PostgreSQL ARRAY type
+    # When offered
+    semester = Column(JSON, default=[])  # List of semester values
     language = Column(String, default="Norwegian")
 
     # Status

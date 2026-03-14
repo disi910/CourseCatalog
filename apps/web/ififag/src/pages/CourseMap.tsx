@@ -1,15 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { DependencyVisualization } from '../components/dependency/DependencyVisualization';
+import type { Course } from '../types';
 
-interface Course {
-  id: string;
-  title: string;
-  title_english: string;
-  prerequisites: any[];
-}
-
-export const CourseMap: React.FC = () => {
+export const CourseMap = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -19,7 +13,7 @@ export const CourseMap: React.FC = () => {
       try {
         const coursesData = await api.getCourses();
         const coursesWithPrereqs = coursesData.filter(
-          (course: Course) => course.prerequisites && course.prerequisites.length > 0
+          (course) => course.prerequisites && course.prerequisites.length > 0
         );
         setCourses(coursesWithPrereqs);
 
@@ -79,7 +73,6 @@ export const CourseMap: React.FC = () => {
         </div>
       </div>
 
-      {/* Visualization */}
       {selectedCourseId && (
         <div className="retro-panel">
           <div className="retro-panel-header">

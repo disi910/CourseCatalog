@@ -15,10 +15,9 @@ from src.models import Course
 config = context.config
 
 # Override the sqlalchemy.url with environment variable
-database_url = os.getenv(
-    "DATABASE_URL",
-    "postgresql://didriksivertsen@localhost/coursecatalog"
-)
+database_url = os.getenv("DATABASE_URL")
+if not database_url:
+    raise RuntimeError("DATABASE_URL environment variable is required")
 config.set_main_option("sqlalchemy.url", database_url)
 
 # Continue with rest of env.py...

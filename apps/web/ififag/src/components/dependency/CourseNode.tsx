@@ -1,7 +1,6 @@
-import React, { memo } from 'react';
-import { Handle } from 'reactflow';
+import { memo } from 'react';
+import { Handle, Position } from 'reactflow';
 import type { NodeProps } from 'reactflow';
-import { Position } from 'reactflow';
 
 interface CourseNodeData {
     id: string;
@@ -9,14 +8,12 @@ interface CourseNodeData {
     department: string;
     credits: number;
     level: string;
-    isSelected?: boolean;
 }
 
-const CourseNode: React.FC<NodeProps<CourseNodeData>> = ({ data, selected }) => {
+const CourseNode = ({ data, selected }: NodeProps<CourseNodeData>) => {
     return (
-        <div className={`course-node ${selected  ? 'selected' : ''}`}>
-            {/* Handle is a node's connection point, here it gets connected if its a target. On top of the node*/}
-            <Handle 
+        <div className={`course-node ${selected ? 'selected' : ''}`}>
+            <Handle
                 type='target'
                 position={Position.Top}
                 className='handle handle-target'
@@ -29,8 +26,7 @@ const CourseNode: React.FC<NodeProps<CourseNodeData>> = ({ data, selected }) => 
                     <span className='credits'>{data.credits} studiepoeng</span>
                 </div>
             </div>
-            
-            {/* Here it gets connected if its a source. On bottom of the node*/}
+
             <Handle
                 type='source'
                 position={Position.Bottom}
@@ -39,5 +35,5 @@ const CourseNode: React.FC<NodeProps<CourseNodeData>> = ({ data, selected }) => 
         </div>
     );
 };
-{/* memo() prevents unnecessary re-renders */}
+
 export default memo(CourseNode);
