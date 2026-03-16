@@ -17,6 +17,12 @@ class CourseBase(BaseModel):
     teaching_form: Optional[str] = None
     weekly_hours: Optional[int] = Field(None, ge=0, le=40)
 
+    @field_validator('semester', mode='before')
+    @classmethod
+    def normalize_semester(cls, v: list) -> list:
+        """Handle uppercase values from PostgreSQL enum storage."""
+        return [s.lower() if isinstance(s, str) else s for s in v]
+
 class CourseCreate(CourseBase):
     id: str = Field(..., pattern="^[A-Z]{2,4}[0-9]{4}$")  # Validates format like "IN1000"
     prerequisite_ids: List[str] = []
