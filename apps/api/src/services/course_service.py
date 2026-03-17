@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import or_, cast, String
+from sqlalchemy import or_, cast, String, func
 from typing import List, Optional
 from ..models import Course
 from ..schemas import CourseCreate, CourseUpdate
@@ -33,7 +33,7 @@ class CourseService:
             query = query.filter(Course.language == language)
         
         if semester:
-            query = query.filter(cast(Course.semester, String).contains(semester))
+            query = query.filter(func.lower(cast(Course.semester, String)).contains(semester.lower()))
         
         # Search functionality - search across multiple fields
         if search:
