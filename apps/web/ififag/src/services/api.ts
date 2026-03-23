@@ -5,6 +5,7 @@ import type { Course, FilterOptions, DependencyGraph } from "../types";
 // In production, nginx proxies /coursecatalog/api/ to the FastAPI container
 const API_URL = import.meta.env.VITE_API_URL || '/coursecatalog/api';
 
+
 const apiClient = axios.create({
   baseURL: API_URL,
   headers: {

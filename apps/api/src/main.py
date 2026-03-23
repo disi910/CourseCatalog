@@ -1,8 +1,8 @@
 
-from fastapi import FastAPI, HTTPException, Query, Depends
+from fastapi import FastAPI, HTTPException, Query, Depends, Path
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, text
 from typing import List, Optional
 
 from .models import Course, Base
@@ -10,8 +10,11 @@ from .schemas import CourseCreate, CourseUpdate
 from .schemas import Course as CourseSchema
 from .database import engine, get_db
 from .services.course_service import CourseService
+from .auth import require_api_key
 
 Base.metadata.create_all(bind=engine)
+
+COURSE_ID_PATTERN = r"^[A-Za-z]{2,4}\d{4}$"
 
 app = FastAPI(
     title="IFI Course Catalog API",
@@ -21,7 +24,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "https://didriksi.com", "http://didriksi.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -39,10 +42,15 @@ async def read_route():
     }
 
 @app.get("/health")
-def health_check():
-    return {"status": "healthy", "database": "connected"}
+def health_check(db: Session = Depends(get_db)):
+    try:
+        db.execute(text("SELECT 1"))
+        return {"status": "healthy", "database": "connected"}
+    except Exception:
+        raise HTTPException(status_code=503, detail="Database connection failed")
 
-# Course endpoints
+
+# Course endpoints (read - no auth required)
 @app.get("/courses/", response_model=List[CourseSchema])
 def get_courses(
     skip: int = Query(0, ge=0),
@@ -56,21 +64,23 @@ def get_courses(
 ):
     """
     Get all courses with optional filtering.
-    
+
     - **department**: Filter by department (e.g., "Informatics")
     - **level**: Filter by level (bachelor, master, phd)
     - **language**: Filter by language (Norwegian, English)
     - **semester**: Filter by semester (fall, spring)
     - **search**: Search in course ID, title, or description
     """
-    courses = CourseService.get_courses(
+    return CourseService.get_courses(
         db, skip, limit, department, level, language, semester, search
     )
-    return courses
 
 
 @app.get("/courses/{course_id}", response_model=CourseSchema)
-def get_course(course_id: str, db: Session = Depends(get_db)):
+def get_course(
+    course_id: str = Path(pattern=COURSE_ID_PATTERN),
+    db: Session = Depends(get_db),
+):
     """Get a specific course by ID"""
     course = CourseService.get_course(db, course_id.upper())
     if not course:
@@ -78,38 +88,48 @@ def get_course(course_id: str, db: Session = Depends(get_db)):
     return course
 
 
-@app.post("/courses/", response_model=CourseSchema, status_code=201)
+# Course endpoints (write - API key required)
+@app.post("/courses/", response_model=CourseSchema, status_code=201, dependencies=[Depends(require_api_key)])
 def create_course(course: CourseCreate, db: Session = Depends(get_db)):
     """Create a new course"""
     return CourseService.create_course(db, course)
 
 
-@app.put("/courses/{course_id}", response_model=CourseSchema)
+@app.put("/courses/{course_id}", response_model=CourseSchema, dependencies=[Depends(require_api_key)])
 def update_course(
-    course_id: str,
     course: CourseUpdate,
-    db: Session = Depends(get_db)
+    course_id: str = Path(pattern=COURSE_ID_PATTERN),
+    db: Session = Depends(get_db),
 ):
     """Update an existing course"""
     return CourseService.update_course(db, course_id.upper(), course)
 
 
-@app.delete("/courses/{course_id}")
-def delete_course(course_id: str, db: Session = Depends(get_db)):
+@app.delete("/courses/{course_id}", dependencies=[Depends(require_api_key)])
+def delete_course(
+    course_id: str = Path(pattern=COURSE_ID_PATTERN),
+    db: Session = Depends(get_db),
+):
     """Soft delete a course (mark as inactive)"""
     course = CourseService.get_course(db, course_id.upper())
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
-    
+
     course.is_active = False
     db.commit()
     return {"message": "Course deleted successfully"}
 
 
 @app.get("/courses/{course_id}/dependencies")
-def get_course_dependencies(course_id: str, db: Session = Depends(get_db)):
+def get_course_dependencies(
+    course_id: str = Path(pattern=COURSE_ID_PATTERN),
+    db: Session = Depends(get_db),
+):
     """Get course dependency graph for visualization"""
-    return CourseService.get_course_dependencies(db, course_id.upper())
+    result = CourseService.get_course_dependencies(db, course_id.upper())
+    if result is None:
+        raise HTTPException(status_code=404, detail="Course not found")
+    return result
 
 
 # Statistics endpoints
@@ -124,5 +144,5 @@ def get_department_statistics(db: Session = Depends(get_db)):
     ).group_by(
         Course.department
     ).all()
-    
+
     return [{"department": dept, "count": count} for dept, count in stats]

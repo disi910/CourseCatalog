@@ -1,73 +1,661 @@
-@import "tailwindcss";
+/* ==============================================
+   IFI EMNESØK - WEB 1.0 RETRO STYLESHEET
+   Institutt for Informatikk, UiO (circa 2002)
+   ============================================== */
 
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+  --navy: #003366;
+  --teal: #008080;
+  --dark-teal: #006666;
+  --silver: #c0c0c0;
+  --light-gray: #e8e8e8;
+  --bg-gray: #f0f0f0;
+  --dark-gray: #666666;
+  --link-blue: #0000cc;
+  --link-visited: #551a8b;
+  --link-hover: #cc0000;
+  --white: #ffffff;
+  --black: #000000;
+  --border-light: #cccccc;
+  --border-dark: #999999;
+  --highlight-bg: #ffffcc;
+  --error-red: #cc0000;
 }
 
 body {
+  font-family: Verdana, Tahoma, Geneva, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--black);
+  background-color: var(--bg-gray);
   margin: 0;
-  min-width: 320px;
   min-height: 100vh;
 }
 
+/* --- Typography --- */
+
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 22px;
+  font-weight: bold;
+  color: var(--navy);
+  border-bottom: 2px solid var(--navy);
+  padding-bottom: 4px;
+  margin-bottom: 12px;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+h2 {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+
+h3 {
+  font-family: Verdana, Tahoma, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+
+h4 {
+  font-family: Verdana, Tahoma, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--dark-gray);
+  margin-bottom: 2px;
+}
+
+p { margin-bottom: 8px; }
+
+a { color: var(--link-blue); text-decoration: underline; }
+a:visited { color: var(--link-visited); }
+a:hover { color: var(--link-hover); }
+
+/* --- Retro Buttons --- */
+
+button, .retro-btn {
+  font-family: Verdana, Tahoma, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 6px 16px;
+  background-color: var(--light-gray);
+  color: var(--black);
+  border: 2px outset var(--silver);
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 0;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+button:hover, .retro-btn:hover {
+  background-color: var(--silver);
+}
+
+button:active, .retro-btn:active {
+  border-style: inset;
+}
+
+.btn-primary {
+  background-color: var(--teal);
+  color: var(--white);
+  border: 2px outset #00b3b3;
+  font-size: 14px;
+  padding: 10px 28px;
+}
+
+.btn-primary:hover {
+  background-color: var(--dark-teal);
+}
+
+.btn-secondary {
+  background-color: var(--navy);
+  color: var(--white);
+  border: 2px outset #0055aa;
+  font-size: 14px;
+  padding: 10px 28px;
+}
+
+.btn-secondary:hover {
+  background-color: #002244;
+}
+
+.btn-back {
+  background-color: var(--light-gray);
+  color: var(--navy);
+  border: 2px outset var(--silver);
+  font-size: 11px;
+  padding: 4px 12px;
+  margin-bottom: 12px;
+}
+
+/* --- Form Elements --- */
+
+input[type="text"],
+input[type="search"],
+select,
+textarea {
+  font-family: Verdana, Tahoma, sans-serif;
+  font-size: 12px;
+  padding: 4px 6px;
+  border: 2px inset var(--silver);
+  background-color: var(--white);
+  color: var(--black);
+  border-radius: 0;
+}
+
+input[type="text"]:focus,
+input[type="search"]:focus,
+select:focus {
+  outline: 1px dotted var(--navy);
+}
+
+label {
+  font-weight: bold;
+  font-size: 11px;
+  color: var(--dark-gray);
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* --- Layout --- */
+
+.retro-page {
+  background-color: var(--bg-gray);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.retro-container {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+  flex: 1;
+}
+
+.retro-container-wide {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 8px 16px;
+  flex: 1;
+}
+
+.retro-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+}
+
+/* --- Retro Panel --- */
+
+.retro-panel {
+  background-color: var(--white);
+  border: 2px solid var(--border-dark);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.retro-panel-header {
+  background-color: var(--navy);
+  color: var(--white);
+  font-family: Verdana, Tahoma, sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 4px 8px;
+  margin: -12px -12px 12px -12px;
+  border-bottom: 2px solid var(--border-dark);
+}
+
+.retro-panel-sunken {
+  background-color: var(--white);
+  border: 2px inset var(--silver);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+/* --- Course Card --- */
+
+.retro-card {
+  background-color: var(--white);
+  border: 1px solid var(--border-dark);
+  border-left: 4px solid var(--teal);
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.retro-card:hover {
+  background-color: var(--highlight-bg);
+  border-left-color: var(--navy);
+}
+
+.retro-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.retro-card-code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--navy);
+}
+
+.retro-card-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--black);
+  margin-bottom: 2px;
+}
+
+.retro-card-title-en {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--dark-gray);
+  margin-bottom: 4px;
+}
+
+.retro-card-desc {
+  font-size: 11px;
+  color: var(--dark-gray);
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.retro-card-meta {
+  font-size: 11px;
+  color: var(--dark-gray);
+  line-height: 1.6;
+}
+
+.retro-card-meta .meta-label {
+  font-weight: bold;
+  color: var(--black);
+}
+
+/* --- Badges --- */
+
+.retro-badge {
+  display: inline-block;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 1px 6px;
+  border: 1px solid var(--border-dark);
+  background-color: var(--light-gray);
+  color: var(--black);
+  margin-right: 4px;
+  margin-bottom: 2px;
+}
+
+.retro-badge-credits {
+  background-color: var(--teal);
+  color: var(--white);
+  border-color: var(--dark-teal);
+}
+
+.retro-badge-semester {
+  background-color: var(--highlight-bg);
+  border-color: #cccc00;
+  color: var(--black);
+}
+
+.retro-badge-prereq {
+  background-color: var(--light-gray);
+  color: var(--navy);
+  border-color: var(--border-dark);
+}
+
+/* --- Grid --- */
+
+.retro-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 8px;
+}
+
+.retro-grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.retro-grid-2col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.retro-grid-4col {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+@media (max-width: 768px) {
+  .retro-grid-3col, .retro-grid-4col {
+    grid-template-columns: 1fr;
   }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+  .retro-grid-2col {
+    grid-template-columns: 1fr;
   }
 }
-/* Make sure React Flow works properly */
+
+/* --- Search --- */
+
+.retro-search {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.retro-search input {
+  flex: 1;
+  padding: 5px 8px;
+  font-size: 12px;
+  border: 2px inset var(--silver);
+}
+
+.retro-search-icon {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--dark-gray);
+  white-space: nowrap;
+}
+
+/* --- Filters --- */
+
+.retro-filters {
+  background-color: var(--white);
+  border: 2px solid var(--border-dark);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.retro-filters-title {
+  font-family: Verdana, Tahoma, sans-serif;
+  font-weight: bold;
+  font-size: 13px;
+  color: var(--navy);
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 4px;
+}
+
+.retro-filter-group select {
+  width: 100%;
+}
+
+/* --- Modal (Windows 98 Dialog) --- */
+
+.retro-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+}
+
+.retro-modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.retro-modal {
+  background-color: var(--bg-gray);
+  border: 3px outset var(--silver);
+  max-width: 700px;
+  width: 100%;
+  max-height: 85vh;
+  overflow: auto;
+}
+
+.retro-modal-titlebar {
+  background: linear-gradient(90deg, var(--navy) 0%, #0055aa 100%);
+  color: var(--white);
+  font-family: Verdana, Tahoma, sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 3px 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.retro-modal-close {
+  background-color: var(--silver);
+  color: var(--black);
+  border: 2px outset var(--silver);
+  font-size: 12px;
+  font-weight: bold;
+  width: 20px;
+  height: 20px;
+  line-height: 14px;
+  text-align: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.retro-modal-close:active {
+  border-style: inset;
+}
+
+.retro-modal-body {
+  padding: 12px;
+  background-color: var(--white);
+  margin: 4px;
+  border: 1px inset var(--silver);
+}
+
+/* --- Loading & Error --- */
+
+.retro-loading {
+  text-align: center;
+  padding: 24px;
+  color: var(--dark-gray);
+  font-size: 12px;
+}
+
+.retro-loading-indicator {
+  display: inline-block;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  color: var(--teal);
+  letter-spacing: 2px;
+}
+
+@keyframes retro-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.retro-blink {
+  animation: retro-blink 1s step-end infinite;
+}
+
+.retro-error {
+  background-color: #fff0f0;
+  border: 2px solid var(--error-red);
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  color: var(--error-red);
+  font-size: 12px;
+}
+
+.retro-error-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.retro-empty {
+  text-align: center;
+  padding: 24px;
+  color: var(--dark-gray);
+  border: 1px dashed var(--border-light);
+  margin: 16px 0;
+}
+
+/* --- Separators & Misc --- */
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border-dark);
+  border-bottom: 1px solid var(--white);
+  margin: 8px 0;
+}
+
+.retro-results-count {
+  font-size: 11px;
+  color: var(--dark-gray);
+  margin-bottom: 8px;
+}
+
+.retro-results-count strong {
+  color: var(--navy);
+}
+
+/* --- Home Page --- */
+
+.retro-home-logo {
+  height: 80px;
+  width: auto;
+  margin-bottom: 16px;
+}
+
+.retro-home-subtitle {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 16px;
+  color: var(--navy);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.retro-home-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.retro-counter {
+  text-align: center;
+  font-size: 10px;
+  color: var(--dark-gray);
+  margin-top: 24px;
+  font-style: italic;
+}
+
+/* --- Marquee & Status Bar --- */
+
+.retro-marquee {
+  background-color: var(--navy);
+  color: #00ff00;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  padding: 4px 0;
+  overflow: hidden;
+  white-space: nowrap;
+  border-bottom: 2px solid var(--dark-teal);
+}
+
+.retro-marquee-text {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee-scroll 20s linear infinite;
+  padding-left: 100%;
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+.retro-status-bar {
+  background-color: var(--light-gray);
+  border-top: 2px inset var(--silver);
+  padding: 2px 8px;
+  font-size: 10px;
+  color: var(--dark-gray);
+  text-align: center;
+  margin-top: auto;
+}
+
+/* --- Course Map Selector --- */
+
+.retro-course-selector-btn {
+  padding: 6px 8px;
+  text-align: left;
+  border: 1px solid var(--border-dark);
+  background-color: var(--white);
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.retro-course-selector-btn:hover {
+  background-color: var(--highlight-bg);
+}
+
+.retro-course-selector-btn.selected {
+  background-color: #cce5ff;
+  border: 2px solid var(--navy);
+}
+
+.retro-course-selector-code {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 12px;
+  color: var(--navy);
+}
+
+.retro-course-selector-title {
+  font-size: 11px;
+  color: var(--dark-gray);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.retro-course-selector-prereqs {
+  font-size: 10px;
+  color: var(--border-dark);
+  margin-top: 2px;
+}
+
+/* --- ReactFlow --- */
+
 .react-flow__renderer {
   width: 100%;
   height: 100%;
@@ -78,10 +666,29 @@ button:focus-visible {
   right: 10px;
 }
 
-/* Course selector styling */
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+.retro-flow-panel {
+  background-color: var(--white);
+  border: 2px outset var(--silver);
+  padding: 8px;
 }
+
+.retro-flow-panel h4 {
+  font-size: 12px;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+
+.retro-flow-panel p {
+  font-size: 10px;
+  color: var(--dark-gray);
+}
+
+/* --- Utility --- */
+
+.text-center { text-align: center; }
+.capitalize { text-transform: capitalize; }
+.whitespace-pre-line { white-space: pre-line; }
+.hidden { display: none; }
+.mt-2 { margin-top: 4px; }
+.mb-2 { margin-bottom: 4px; }
+.mb-4 { margin-bottom: 8px; }
