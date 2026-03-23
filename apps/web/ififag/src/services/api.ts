@@ -1,10 +1,10 @@
 import axios from "axios";
+import type { Course, FilterOptions, DependencyGraph } from "../types";
 
+// VITE_API_URL allows overriding for local dev (e.g. http://localhost:8000)
 // In production, nginx proxies /coursecatalog/api/ to the FastAPI container
-// Using a relative path means it works both locally and in production
-const API_URL = '/coursecatalog/api';
+const API_URL = import.meta.env.VITE_API_URL || '/coursecatalog/api';
 
-// Create axios instance with default config
 const apiClient = axios.create({
   baseURL: API_URL,
   headers: {
@@ -12,44 +12,25 @@ const apiClient = axios.create({
   },
 });
 
-// Define types for better TypeScript support
-interface CourseFilters {
-  department?: string;
-  level?: string;
-  language?: string;
-  semester?: string;
-  search?: string;
-}
-
 export const api = {
-  // Get all courses with optional filters
-  getCourses: async (filters?: CourseFilters) => {
-    try {
-      // Build query string from filters
-      const params = new URLSearchParams();
-      if (filters) {
-        Object.entries(filters).forEach(([key, value]) => {
-          if (value) params.append(key, value);
-        });
-      }
-      
-      const response = await apiClient.get(`/courses/?${params}`);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching courses:', error);
-      throw error;
+  getCourses: async (filters?: FilterOptions & { search?: string }): Promise<Course[]> => {
+    const params = new URLSearchParams();
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value) params.append(key, value);
+      });
     }
+    const response = await apiClient.get(`/courses/?${params}`);
+    return response.data;
   },
 
-  // Get single course
-  getCourse: async (id: string) => {
+  getCourse: async (id: string): Promise<Course> => {
     const response = await apiClient.get(`/courses/${id}`);
     return response.data;
   },
 
-  // Get course dependencies for visualization
-  getCourseDependencies: async (id: string) => {
+  getCourseDependencies: async (id: string): Promise<DependencyGraph> => {
     const response = await apiClient.get(`/courses/${id}/dependencies`);
     return response.data;
-  }
+  },
 };
