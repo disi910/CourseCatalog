@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const API_URL = 'http://192.168.0.200:8000';
+// In production, nginx proxies /coursecatalog/api/ to the FastAPI container
+// Using a relative path means it works both locally and in production
+const API_URL = '/coursecatalog/api';
 
 // Create axios instance with default config
 const apiClient = axios.create({
