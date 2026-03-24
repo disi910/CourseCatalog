@@ -8,7 +8,8 @@ WORKDIR /app
 # Copy package files first (Docker caches this layer)
 # If package.json hasn't changed, Docker skips npm install on rebuild = much faster
 COPY package.json package-lock.json ./
-RUN npm ci    # ci = clean install, faster & more reliable than npm install
+# ci = clean install, faster & more reliable than npm install
+RUN npm ci
 
 # Now copy source code and build
 COPY . .

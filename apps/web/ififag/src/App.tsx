@@ -87,6 +87,7 @@ function App() {
 
       {/* Retro status bar */}
       <div className="retro-status-bar">
+        <a href="/" style={{color: '#0000cc', textDecoration: 'underline', marginRight: '8px'}}>didriksi.com</a> |
         Sist oppdatert: Mars 2026 | Institutt for Informatikk, UiO
       </div>
     </div>
