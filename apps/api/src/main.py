@@ -146,3 +146,78 @@ def get_department_statistics(db: Session = Depends(get_db)):
     ).all()
 
     return [{"department": dept, "count": count} for dept, count in stats]
+
+
+# Debug endpoint - check database state
+@app.get("/debug/db")
+def debug_db(db: Session = Depends(get_db)):
+    """Check what's actually in the database"""
+    import os
+    total = db.query(Course).count()
+    active = db.query(Course).filter(Course.is_active == True).count()
+    inactive = db.query(Course).filter(Course.is_active == False).count()
+
+    # Check if tables exist
+    from sqlalchemy import inspect
+    inspector = inspect(engine)
+    tables = inspector.get_table_names()
+
+    # Sample course IDs
+    sample = [c.id for c in db.query(Course).limit(5).all()]
+
+    return {
+        "database_url": os.getenv("DATABASE_URL", "NOT SET (using sqlite default)"),
+        "tables": tables,
+        "total_courses": total,
+        "active_courses": active,
+        "inactive_courses": inactive,
+        "sample_ids": sample
+    }
+
+
+# Seed endpoint - populate database via HTTP (API key required)
+@app.post("/seed", dependencies=[Depends(require_api_key)])
+def seed_database(db: Session = Depends(get_db)):
+    """Seed the database with course data"""
+    from .seed_server import all_courses_data
+    from .models import prerequisite_table
+
+    # First pass: create courses
+    created = 0
+    skipped = 0
+    course_prereqs = {}
+
+    for course_data in all_courses_data:
+        existing = db.query(Course).filter(Course.id == course_data["id"]).first()
+        if existing:
+            skipped += 1
+            course_prereqs[course_data["id"]] = course_data.get("prerequisite_ids", [])
+            continue
+
+        prereq_ids = course_data.pop("prerequisite_ids", [])
+        course = Course(**course_data)
+        db.add(course)
+        course_prereqs[course.id] = prereq_ids
+        created += 1
+
+    db.commit()
+
+    # Second pass: add prerequisites
+    prereq_count = 0
+    for course_id, prereq_ids in course_prereqs.items():
+        course = db.query(Course).filter(Course.id == course_id).first()
+        for prereq_id in prereq_ids:
+            prereq = db.query(Course).filter(Course.id == prereq_id).first()
+            if prereq and prereq not in course.prerequisites:
+                course.prerequisites.append(prereq)
+                prereq_count += 1
+
+    db.commit()
+
+    total = db.query(Course).count()
+    return {
+        "created": created,
+        "skipped": skipped,
+        "prerequisites_added": prereq_count,
+        "total_courses": total
+    }
