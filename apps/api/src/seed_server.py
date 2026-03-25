@@ -765,7 +765,7 @@ all_courses_data = [
         "exam_form": "Muntlig presentasjon av forskningsartikler (20%) og muntlig eksamen (80%)",
         "teaching_form": "3 timer seminarer per uke",
         "weekly_hours": 3,
-        "prerequisite_ids": ["IN3230"]
+        "prerequisite_ids": ["IN3230", "IN2140", "IN1010", "IN1020"]
     },
     {
         "id": "IN5040",
