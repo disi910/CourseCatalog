@@ -236,7 +236,7 @@ all_courses_data = [
         "exam_form": "4 timers avsluttende skriftlig eksamen",
         "teaching_form": "2 timer forelesning og 2 timer grupper per uke",
         "weekly_hours": 4,
-        "prerequisite_ids": ["IN1010"]
+        "prerequisite_ids": ["IN1000"]
     },
     {
         "id": "IN2060",
@@ -252,7 +252,7 @@ all_courses_data = [
         "exam_form": "4 timers avsluttende skriftlig eksamen + obligatorisk lab",
         "teaching_form": "2 timer forelesning og 4 timer lab per uke",
         "weekly_hours": 6,
-        "prerequisite_ids": ["IN1020"]
+        "prerequisite_ids": []
     },
     {
         "id": "IN2070",
@@ -268,7 +268,7 @@ all_courses_data = [
         "exam_form": "4 timers avsluttende skriftlig eksamen",
         "teaching_form": "2 timer forelesning og 2 timer gruppeundervisning per uke",
         "weekly_hours": 4,
-        "prerequisite_ids": ["IN1020"]
+        "prerequisite_ids": ["IN1000", "MAT1100"]
     },
     {
         "id": "IN2090",
@@ -284,7 +284,7 @@ all_courses_data = [
         "exam_form": "4 timers avsluttende skriftlig digital eksamen",
         "teaching_form": "2 timer forelesning og 2 timer gruppeundervisning per uke",
         "weekly_hours": 4,
-        "prerequisite_ids": ["IN1010"]
+        "prerequisite_ids": ["IN1000"]
     },
     {
         "id": "IN2120",
@@ -300,7 +300,7 @@ all_courses_data = [
         "exam_form": "4 timers avsluttende skriftlig eksamen",
         "teaching_form": "2 timer forelesning og 2 timer gruppeundervisning per uke",
         "weekly_hours": 4,
-        "prerequisite_ids": ["IN1020"]
+        "prerequisite_ids": []
     },
     {
         "id": "IN2140",
@@ -316,7 +316,7 @@ all_courses_data = [
         "exam_form": "4 timers avsluttende skriftlig digital eksamen",
         "teaching_form": "2 timer forelesning og 2 timer gruppeundervisning per uke",
         "weekly_hours": 4,
-        "prerequisite_ids": ["IN1010", "IN1020"]
+        "prerequisite_ids": ["IN1000", "IN1020"]
     },
     {
         "id": "IN2150",
@@ -380,7 +380,7 @@ all_courses_data = [
         "exam_form": "4 timers avsluttende skriftlig eksamen",
         "teaching_form": "2 timer forelesning og 2 timer gruppeundervisning per uke",
         "weekly_hours": 4,
-        "prerequisite_ids": ["IN1010", "IN2140"]
+        "prerequisite_ids": ["IN1000", "IN1010"]
     },
     {
         "id": "IN3040",
@@ -396,7 +396,7 @@ all_courses_data = [
         "exam_form": "4 timers avsluttende skriftlig eksamen",
         "teaching_form": "2 timer forelesning og 2 timer gruppeundervisning per uke",
         "weekly_hours": 4,
-        "prerequisite_ids": ["IN1010"]
+        "prerequisite_ids": []
     },
     {
         "id": "IN3050",
@@ -412,7 +412,7 @@ all_courses_data = [
         "exam_form": "4 timers avsluttende skriftlig eksamen",
         "teaching_form": "2 timer forelesning og 2 timer gruppeundervisning per uke",
         "weekly_hours": 4,
-        "prerequisite_ids": ["IN1010"]
+        "prerequisite_ids": []
     },
     {
         "id": "IN3060",
@@ -428,7 +428,7 @@ all_courses_data = [
         "exam_form": "Hjemmeeksamen",
         "teaching_form": "2 timer forelesning og 2 timer gruppeundervisning per uke",
         "weekly_hours": 4,
-        "prerequisite_ids": ["IN2010"]
+        "prerequisite_ids": ["IN1010"]
     },
     {
         "id": "IN3070",
@@ -444,7 +444,7 @@ all_courses_data = [
         "exam_form": "4 timers avsluttende skriftlig eksamen",
         "teaching_form": "4 timer forelesning og 2 timer gruppeundervisning per uke",
         "weekly_hours": 6,
-        "prerequisite_ids": ["IN1150"]
+        "prerequisite_ids": []
     },
     {
         "id": "IN3110",
@@ -460,7 +460,7 @@ all_courses_data = [
         "exam_form": "Prosjektbasert",
         "teaching_form": "2 timer forelesning og 2 timer lab per uke",
         "weekly_hours": 4,
-        "prerequisite_ids": ["IN1000"]
+        "prerequisite_ids": []
     },
     {
         "id": "MAT1100",
