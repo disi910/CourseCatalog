@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Node, Edge } from 'reactflow';
+import { MarkerType } from 'reactflow';
 import { api } from '../services/api';
 import type { DependencyNode, DependencyEdge } from '../types';
 
@@ -132,8 +133,13 @@ const transformToEdges = (apiEdges: DependencyEdge[]): Edge[] => {
     id: `${edge.source}-${edge.target}`,
     source: edge.source,
     target: edge.target,
-    type: 'step',
-    animated: false,
-    style: { stroke: '#003366', strokeWidth: 2 },
+    type: 'smoothstep',
+    animated: true,
+    label: 'krever',
+    labelStyle: { fontSize: 10, fontFamily: 'Verdana, Tahoma, sans-serif', fill: '#666666' },
+    labelBgStyle: { fill: '#f0f0f0', stroke: '#cccccc', strokeWidth: 1 },
+    labelBgPadding: [4, 2] as [number, number],
+    style: { stroke: '#008080', strokeWidth: 2, strokeDasharray: '6 3' },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#008080', width: 16, height: 16 },
   }));
 };

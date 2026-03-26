@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 import type { NodeProps } from 'reactflow';
+import './CourseNode.css';
 
 interface CourseNodeData {
     id: string;
@@ -20,12 +21,18 @@ const CourseNode = ({ data, selected }: NodeProps<CourseNodeData>) => {
                 className='handle handle-target'
             />
 
-            <div className='course-content'>
-                <div className={`course-badge ${data.isRoot ? 'root-badge' : ''}`}>{data.id}</div>
+            {/* Windows 98 title bar */}
+            <div className='course-node-titlebar'>
+                <span>{data.id}</span>
+                <span className='node-credits'>{data.credits} stp</span>
+            </div>
+
+            {/* Node body */}
+            <div className='course-node-body'>
                 <div className='course-title'>{data.title}</div>
-                <div className='course-meta'>
-                    <span className='credits'>{data.credits} stp</span>
-                    <span className='level'>{data.level}</span>
+                <div className='course-meta-row'>
+                    <span className='meta-tag tag-level'>{data.level}</span>
+                    {data.isRoot && <span className='meta-tag tag-root'>Valgt</span>}
                 </div>
             </div>
 

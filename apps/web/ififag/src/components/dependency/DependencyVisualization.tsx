@@ -97,7 +97,7 @@ export const DependencyVisualization = ({
         fitViewOptions={{ padding: 0.3 }}
         attributionPosition="bottom-left"
       >
-        <Background color="#cccccc" gap={16} />
+        <Background color="#cccccc" gap={20} size={1} />
         <Controls />
 
         <Panel position="top-right">

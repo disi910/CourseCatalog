@@ -1,10 +1,17 @@
-/* CourseNode.css - Retro ReactFlow Nodes */
+/* CourseNode.css - Retro 2002 ReactFlow Nodes */
 
 .course-node {
-  background: #ffffff;
-  border: 2px solid #003366;
-  padding: 10px;
-  min-width: 180px;
+  background: #f0f0f0;
+  border: 2px outset #c0c0c0;
+  padding: 0;
+  min-width: 200px;
+  max-width: 260px;
+  font-family: Verdana, Tahoma, sans-serif;
+  cursor: pointer;
+}
+
+.course-node:hover {
+  background: #ffffcc;
 }
 
 .course-node.selected {
@@ -13,33 +20,87 @@
 }
 
 .course-node.root {
-  border-width: 3px;
-  border-color: #003366;
-  background-color: #cce5ff;
+  border: 3px outset #008080;
+  background: #e0f0f0;
 }
 
-.course-badge {
-  background: #003366;
+/* Windows 98-style title bar on each node */
+.course-node-titlebar {
+  background: linear-gradient(90deg, #003366 0%, #0055aa 100%);
   color: #ffffff;
   padding: 2px 8px;
   font-family: 'Courier New', Courier, monospace;
   font-weight: bold;
   font-size: 12px;
-  display: inline-block;
-  margin-bottom: 6px;
-  border: 1px outset #0055aa;
+  letter-spacing: 1px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.root-badge {
+.course-node.root .course-node-titlebar {
+  background: linear-gradient(90deg, #006666 0%, #008080 100%);
+}
+
+.course-node-titlebar .node-credits {
+  font-size: 10px;
+  font-weight: normal;
+  opacity: 0.9;
+}
+
+.course-node-body {
+  padding: 8px 10px;
+  border-top: 1px solid #999999;
+}
+
+.course-title {
+  font-size: 11px;
+  font-weight: bold;
+  color: #000000;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.course-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: #666666;
+  border-top: 1px solid #cccccc;
+  padding-top: 4px;
+  margin-top: 4px;
+}
+
+.course-meta-row .meta-tag {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 9px;
+  padding: 1px 5px;
+  border: 1px solid #999999;
+  background: #e8e8e8;
+}
+
+.course-meta-row .meta-tag.tag-level {
+  text-transform: capitalize;
+}
+
+.course-meta-row .meta-tag.tag-root {
   background: #008080;
+  color: #ffffff;
   border-color: #006666;
 }
 
+/* Connection handles */
 .handle {
   width: 8px;
   height: 8px;
-  border: 2px solid #008080;
+  border: 2px solid #003366;
   background: #ffffff;
+}
+
+.course-node.root .handle {
+  border-color: #008080;
 }
 
 .handle-target {
@@ -48,33 +109,4 @@
 
 .handle-source {
   bottom: -4px;
-}
-
-.course-content {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.course-title {
-  font-family: Verdana, Tahoma, sans-serif;
-  font-size: 12px;
-  font-weight: bold;
-  color: #000000;
-  line-height: 1.4;
-}
-
-.course-meta {
-  display: flex;
-  gap: 8px;
-  font-size: 10px;
-  color: #666666;
-}
-
-.credits, .level {
-  font-weight: bold;
-}
-
-.level {
-  text-transform: capitalize;
 }
