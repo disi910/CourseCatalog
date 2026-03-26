@@ -54,22 +54,24 @@ export const CourseMap = () => {
       {/* Course Selector */}
       <div className="retro-panel">
         <div className="retro-panel-header">Velg emne å utforske</div>
-        <div className="retro-grid-3col">
-          {courses.map((course) => (
-            <button
-              key={course.id}
-              onClick={() => setSelectedCourseId(course.id)}
-              className={`retro-course-selector-btn ${
-                selectedCourseId === course.id ? 'selected' : ''
-              }`}
-            >
-              <div className="retro-course-selector-code">{course.id}</div>
-              <div className="retro-course-selector-title">{course.title}</div>
-              <div className="retro-course-selector-prereqs">
-                {course.prerequisites.length} forkunnskaper
-              </div>
-            </button>
-          ))}
+        <div style={{ maxHeight: '250px', overflowY: 'auto', border: '2px inset #c0c0c0', padding: '4px' }}>
+          <div className="retro-grid-3col">
+            {courses.map((course) => (
+              <button
+                key={course.id}
+                onClick={() => setSelectedCourseId(course.id)}
+                className={`retro-course-selector-btn ${
+                  selectedCourseId === course.id ? 'selected' : ''
+                }`}
+              >
+                <div className="retro-course-selector-code">{course.id}</div>
+                <div className="retro-course-selector-title">{course.title}</div>
+                <div className="retro-course-selector-prereqs">
+                  {course.prerequisites.length} forkunnskaper
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
