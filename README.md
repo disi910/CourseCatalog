@@ -114,3 +114,16 @@ pytest tests
 |----------------|--------------------------------------|----------------------------|
 | `DATABASE_URL` | PostgreSQL connection string         | *(required)*               |
 | `SECRET_KEY`   | Application secret key               | `development-secret-key`   |
+
+---
+
+## TODO
+
+- [ ] Fix IFI logo not displaying
+- [ ] Implement small search bar in Emnekart
+- [ ] Give the blue dependency nodes a blue outline on left and top (like the turquoise root nodes)
+- [ ] Show actual total forkunnskaper count in Emnekart (recursive, not just direct)
+- [ ] Add course link to information card and make prerequisites clickable to open their info card
+- [ ] Add "Anbefalte forkunnskaper" (recommended prerequisites) from course sites
+- [ ] Implement grade chart for courses by scraping karakterweb.no API
+- [ ] Add homepage navigation like HousingMarketClassifier has
