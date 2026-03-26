@@ -51,7 +51,6 @@ export const useDependencyGraph = (courseId: string | null) => {
 const transformToNodes = (apiNodes: DependencyNode[], apiEdges: DependencyEdge[], rootId: string): Node[] => {
     // Build a hierarchical layout: root at bottom, prerequisites above
     const levels = assignLevels(apiNodes, apiEdges, rootId);
-    const maxLevel = Math.max(...Object.values(levels), 0);
 
     // Group nodes by level for horizontal spacing
     const nodesByLevel: Record<number, DependencyNode[]> = {};
