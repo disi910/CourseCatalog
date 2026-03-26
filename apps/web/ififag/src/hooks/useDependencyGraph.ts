@@ -71,9 +71,9 @@ const transformToNodes = (apiNodes: DependencyNode[], apiEdges: DependencyEdge[]
         const indexInLevel = nodesAtLevel.indexOf(node);
         const totalWidth = nodesAtLevel.length * NODE_WIDTH + (nodesAtLevel.length - 1) * HORIZONTAL_GAP;
 
-        // Center nodes horizontally, root at bottom
+        // Center nodes horizontally, root at top, prerequisites below
         const x = indexInLevel * (NODE_WIDTH + HORIZONTAL_GAP) - totalWidth / 2 + NODE_WIDTH / 2;
-        const y = (maxLevel - level) * VERTICAL_GAP;
+        const y = level * VERTICAL_GAP;
 
         return {
             id: node.id,
@@ -130,9 +130,9 @@ const assignLevels = (
 
 const transformToEdges = (apiEdges: DependencyEdge[]): Edge[] => {
   return apiEdges.map((edge) => ({
-    id: `${edge.source}-${edge.target}`,
-    source: edge.source,
-    target: edge.target,
+    id: `${edge.target}-${edge.source}`,
+    source: edge.target,
+    target: edge.source,
     type: 'smoothstep',
     animated: true,
     label: 'krever',
