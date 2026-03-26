@@ -10,4 +10,12 @@ export default defineConfig({
   plugins: [
     react(),
   ],
+  server: {
+    proxy: {
+      '/coursecatalog/api': {
+        target: 'http://localhost:8000',
+        rewrite: (path) => path.replace(/^\/coursecatalog\/api/, ''),
+      },
+    },
+  },
 })
