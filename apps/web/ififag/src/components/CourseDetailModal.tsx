@@ -73,11 +73,11 @@ export const CourseDetailModal = ({ courseId, isOpen, onClose }: CourseDetailMod
                   </div>
                   <div>
                     <h4>Undervisningsspråk</h4>
-                    <p>{course?.language}</p>
+                    <p>{course?.language === 'English' ? 'Engelsk' : 'Norsk'}</p>
                   </div>
                   <div>
                     <h4>Nivå</h4>
-                    <p className="capitalize">{course?.level}</p>
+                    <p>{course?.level ? course.level.charAt(0).toUpperCase() + course.level.slice(1) : ''}</p>
                   </div>
                   <div>
                     <h4>Semester</h4>

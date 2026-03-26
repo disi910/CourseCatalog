@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import or_, cast, String
-from typing import List, Optional
-from ..models import Course
+from sqlalchemy import and_, or_, func, select, cast, String
+from typing import List, Optional, Dict
+from ..models import Course, prerequisite_table
 from ..schemas import CourseCreate, CourseUpdate
 
 class CourseService:
@@ -114,19 +114,24 @@ class CourseService:
         course = CourseService.get_course(db, course_id)
         if not course:
             return None
-        
+
+        # Load prerequisite types from the association table
+        prereq_rows = db.execute(select(prerequisite_table)).fetchall()
+        prereq_type_map = {}
+        for row in prereq_rows:
+            prereq_type_map[(row.course_id, row.prerequisite_id)] = row.type or "mandatory"
+
         # Build dependency graph
         nodes = []
         edges = []
         visited = set()
-        
+
         def add_course_to_graph(current_course, depth=0):
-            if current_course.id in visited or depth > 3:  # Prevent infinite loops
+            if current_course.id in visited or depth > 3:
                 return
-            
+
             visited.add(current_course.id)
-            
-            # Add current course as node
+
             nodes.append({
                 "id": current_course.id,
                 "label": current_course.title,
@@ -134,24 +139,72 @@ class CourseService:
                 "credits": current_course.credits,
                 "level": current_course.level
             })
-            
-            # Add prerequisites recursively
+
             for prereq in current_course.prerequisites:
-                # Add prerequisite as node
                 if prereq.id not in visited:
                     add_course_to_graph(prereq, depth + 1)
-                
-                # Add edge from prerequisite to current course
+
+                edge_type = prereq_type_map.get(
+                    (current_course.id, prereq.id), "mandatory"
+                )
                 edges.append({
                     "source": prereq.id,
                     "target": current_course.id,
-                    "type": "prerequisite"
+                    "type": edge_type
                 })
-        
-        # Start building graph from the requested course
+
         add_course_to_graph(course)
-        
+
+        # total_prerequisite_count = all nodes except the root
+        total_prerequisite_count = len(nodes) - 1 if nodes else 0
+
         return {
             "nodes": nodes,
-            "edges": edges
+            "edges": edges,
+            "total_prerequisite_count": total_prerequisite_count
         }
+
+    @staticmethod
+    def get_all_prerequisite_counts(db: Session) -> Dict[str, int]:
+        """Get transitive prerequisite counts for all courses"""
+        courses = db.query(Course).options(joinedload(Course.prerequisites)).filter(Course.is_active).all()
+
+        # Build adjacency list: course_id -> list of direct prerequisite ids
+        adj: Dict[str, List[str]] = {}
+        for course in courses:
+            adj[course.id] = [p.id for p in course.prerequisites]
+
+        # Memoized DFS to count transitive prerequisites
+        cache: Dict[str, int] = {}
+
+        def count_transitive(course_id: str, visiting: set) -> int:
+            if course_id in cache:
+                return cache[course_id]
+            if course_id in visiting:
+                return 0  # cycle guard
+
+            visiting.add(course_id)
+            total = set()
+            for prereq_id in adj.get(course_id, []):
+                total.add(prereq_id)
+                # Add all transitive prerequisites of this prereq
+                _count_transitive_set(prereq_id, total, visiting)
+            visiting.discard(course_id)
+
+            cache[course_id] = len(total)
+            return len(total)
+
+        def _count_transitive_set(course_id: str, result: set, visiting: set):
+            if course_id in visiting:
+                return
+            visiting.add(course_id)
+            for prereq_id in adj.get(course_id, []):
+                result.add(prereq_id)
+                _count_transitive_set(prereq_id, result, visiting)
+            visiting.discard(course_id)
+
+        counts = {}
+        for course in courses:
+            counts[course.id] = count_transitive(course.id, set())
+
+        return counts

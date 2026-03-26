@@ -76,6 +76,12 @@ def get_courses(
     )
 
 
+@app.get("/courses/prerequisite-counts")
+def get_prerequisite_counts(db: Session = Depends(get_db)):
+    """Get transitive prerequisite counts for all courses"""
+    return CourseService.get_all_prerequisite_counts(db)
+
+
 @app.get("/courses/{course_id}", response_model=CourseSchema)
 def get_course(
     course_id: str = Path(pattern=COURSE_ID_PATTERN),

@@ -95,10 +95,23 @@ export const DependencyVisualization = ({
 
         <Panel position="top-right">
           <div className="retro-flow-panel">
-            <h4>Emnekart</h4>
-            <p>Klikk på emner for å utforske</p>
+            <h4>Forklaring</h4>
+            <div style={{marginTop: '4px'}}>
+              <div style={{display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '3px'}}>
+                <span style={{width: '10px', height: '10px', display: 'inline-block', background: '#008080', border: '1px outset #00b3b3'}}></span>
+                <span>Valgt emne</span>
+              </div>
+              <div style={{display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '3px'}}>
+                <span style={{width: '10px', height: '10px', display: 'inline-block', background: '#003366', border: '1px outset #0055aa'}}></span>
+                <span>Obligatoriske forkunnskaper</span>
+              </div>
+              <div style={{display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '3px'}}>
+                <span style={{width: '10px', height: '10px', display: 'inline-block', background: '#996600', border: '1px outset #cc8800'}}></span>
+                <span>Anbefalte forkunnskaper</span>
+              </div>
+            </div>
             {selectedNode && (
-              <div style={{fontSize: '10px', marginTop: '4px'}}>
+              <div style={{fontSize: '10px', marginTop: '4px', borderTop: '1px solid #ccc', paddingTop: '4px'}}>
                 <span style={{fontWeight: 'bold'}}>Valgt: </span>
                 <span style={{fontFamily: 'Courier New, monospace', color: '#003366'}}>{selectedNode}</span>
               </div>

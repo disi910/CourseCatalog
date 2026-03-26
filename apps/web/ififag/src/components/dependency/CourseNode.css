@@ -1,4 +1,4 @@
-/* CourseNode.css - Retro ReactFlow Nodes */
+/* CourseNode.css - Retro ReactFlow Nodes with prerequisite type styling */
 
 .course-node {
   background: #ffffff;
@@ -7,13 +7,30 @@
   min-width: 180px;
 }
 
-.course-node.selected {
+/* Root node (the selected course) */
+.course-node.root {
   border-color: #008080;
+  border-width: 3px;
+  background-color: #f0ffff;
+}
+
+/* Mandatory prerequisite */
+.course-node.mandatory {
+  border-color: #003366;
+}
+
+/* Recommended prerequisite */
+.course-node.recommended {
+  border-color: #996600;
+  border-style: dashed;
+}
+
+.course-node.selected {
   background-color: #ffffcc;
 }
 
+/* Badge styles */
 .course-badge {
-  background: #003366;
   color: #ffffff;
   padding: 2px 8px;
   font-family: 'Courier New', Courier, monospace;
@@ -21,14 +38,41 @@
   font-size: 12px;
   display: inline-block;
   margin-bottom: 6px;
+}
+
+.course-badge.root {
+  background: #008080;
+  border: 1px outset #00b3b3;
+}
+
+.course-badge.mandatory {
+  background: #003366;
   border: 1px outset #0055aa;
 }
 
+.course-badge.recommended {
+  background: #996600;
+  border: 1px outset #cc8800;
+}
+
+/* Handles */
 .handle {
   width: 8px;
   height: 8px;
   border: 2px solid #008080;
   background: #ffffff;
+}
+
+.course-node.root .handle {
+  border-color: #008080;
+}
+
+.course-node.mandatory .handle {
+  border-color: #003366;
+}
+
+.course-node.recommended .handle {
+  border-color: #996600;
 }
 
 .handle-target {
@@ -39,6 +83,7 @@
   bottom: -4px;
 }
 
+/* Content */
 .course-content {
   display: flex;
   flex-direction: column;
