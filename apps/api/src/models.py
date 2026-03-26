@@ -28,7 +28,8 @@ prerequisite_table = Table(
     'prerequisites',
     Base.metadata,
     Column('course_id', String, ForeignKey('courses.id'), primary_key=True),
-    Column('prerequisite_id', String, ForeignKey('courses.id'), primary_key=True)
+    Column('prerequisite_id', String, ForeignKey('courses.id'), primary_key=True),
+    Column('type', String, default='mandatory')  # "mandatory" or "recommended"
 )
 
 class Course(Base):

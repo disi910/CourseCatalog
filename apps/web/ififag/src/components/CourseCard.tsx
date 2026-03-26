@@ -46,8 +46,8 @@ export const CourseCard = ({ course, onClick }: CourseCardProps) => {
 
             {/* Course metadata */}
             <div className="retro-card-meta">
-                <p><span className="meta-label">Språk:</span> {course.language}</p>
-                <p><span className="meta-label">Nivå:</span> {course.level}</p>
+                <p><span className="meta-label">Språk:</span> {course.language === 'English' ? 'Engelsk' : 'Norsk'}</p>
+                <p><span className="meta-label">Nivå:</span> {course.level.charAt(0).toUpperCase() + course.level.slice(1)}</p>
                 {course.teaching_form && (
                     <p><span className="meta-label">Undervisning:</span> {course.teaching_form}</p>
                 )}
