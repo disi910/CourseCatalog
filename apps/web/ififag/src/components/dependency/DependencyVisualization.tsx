@@ -34,10 +34,8 @@ export const DependencyVisualization = ({
   const { nodes: graphNodes, edges: graphEdges, loading, error } = useDependencyGraph(courseId);
 
   useEffect(() => {
-    if (graphNodes && graphEdges) {
-      setNodes(graphNodes);
-      setEdges(graphEdges);
-    }
+    setNodes(graphNodes);
+    setEdges(graphEdges);
   }, [graphNodes, graphEdges, setNodes, setEdges]);
 
   const onNodeClick = useCallback(
@@ -76,6 +74,14 @@ export const DependencyVisualization = ({
     );
   }
 
+  if (nodes.length === 0) {
+    return (
+      <div style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <p style={{color: '#666', fontSize: '12px'}}>Ingen avhengigheter funnet for dette emnet.</p>
+      </div>
+    );
+  }
+
   return (
     <ReactFlowProvider>
       <ReactFlow
@@ -88,6 +94,7 @@ export const DependencyVisualization = ({
         nodeTypes={nodeTypes}
         connectionMode={ConnectionMode.Loose}
         fitView
+        fitViewOptions={{ padding: 0.3 }}
         attributionPosition="bottom-left"
       >
         <Background color="#cccccc" gap={16} />
@@ -97,6 +104,9 @@ export const DependencyVisualization = ({
           <div className="retro-flow-panel">
             <h4>Emnekart</h4>
             <p>Klikk på emner for å utforske</p>
+            <p style={{fontSize: '10px', color: '#999'}}>
+              {nodes.length} emner, {edges.length} avhengigheter
+            </p>
             {selectedNode && (
               <div style={{fontSize: '10px', marginTop: '4px'}}>
                 <span style={{fontWeight: 'bold'}}>Valgt: </span>

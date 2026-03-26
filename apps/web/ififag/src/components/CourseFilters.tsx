@@ -1,9 +1,4 @@
-interface FilterOptions {
-  department?: string;
-  level?: string;
-  language?: string;
-  semester?: string;
-}
+import type { FilterOptions } from '../types';
 
 interface CourseFiltersProps {
   filters: FilterOptions;

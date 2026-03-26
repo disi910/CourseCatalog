@@ -1,19 +1,4 @@
-import type { CoursePrerequisite } from '../types';
-
-interface Course {
-    id: string;
-    title: string;
-    title_english: string;
-    description: string;
-    credits: number;
-    level: string;
-    semester: string[];
-    language: string;
-    prerequisites: CoursePrerequisite[];
-    instructor?: string;
-    exam_form: string;
-    teaching_form: string;
-}
+import type { Course, CoursePrerequisite } from '../types';
 
 interface CourseCardProps {
     course: Course;
@@ -50,6 +35,9 @@ export const CourseCard = ({ course, onClick }: CourseCardProps) => {
                 <p><span className="meta-label">Nivå:</span> {course.level}</p>
                 {course.teaching_form && (
                     <p><span className="meta-label">Undervisning:</span> {course.teaching_form}</p>
+                )}
+                {course.exam_form && (
+                    <p><span className="meta-label">Eksamen:</span> {course.exam_form}</p>
                 )}
             </div>
 

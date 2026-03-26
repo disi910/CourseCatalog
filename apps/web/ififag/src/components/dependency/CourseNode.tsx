@@ -8,11 +8,12 @@ interface CourseNodeData {
     department: string;
     credits: number;
     level: string;
+    isRoot?: boolean;
 }
 
 const CourseNode = ({ data, selected }: NodeProps<CourseNodeData>) => {
     return (
-        <div className={`course-node ${selected ? 'selected' : ''}`}>
+        <div className={`course-node ${selected ? 'selected' : ''} ${data.isRoot ? 'root' : ''}`}>
             <Handle
                 type='target'
                 position={Position.Top}
@@ -20,10 +21,11 @@ const CourseNode = ({ data, selected }: NodeProps<CourseNodeData>) => {
             />
 
             <div className='course-content'>
-                <div className='course-badge'>{data.id}</div>
+                <div className={`course-badge ${data.isRoot ? 'root-badge' : ''}`}>{data.id}</div>
                 <div className='course-title'>{data.title}</div>
                 <div className='course-meta'>
-                    <span className='credits'>{data.credits} studiepoeng</span>
+                    <span className='credits'>{data.credits} stp</span>
+                    <span className='level'>{data.level}</span>
                 </div>
             </div>
 

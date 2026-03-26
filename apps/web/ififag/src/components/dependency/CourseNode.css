@@ -12,6 +12,12 @@
   background-color: #ffffcc;
 }
 
+.course-node.root {
+  border-width: 3px;
+  border-color: #003366;
+  background-color: #cce5ff;
+}
+
 .course-badge {
   background: #003366;
   color: #ffffff;
@@ -22,6 +28,11 @@
   display: inline-block;
   margin-bottom: 6px;
   border: 1px outset #0055aa;
+}
+
+.root-badge {
+  background: #008080;
+  border-color: #006666;
 }
 
 .handle {
@@ -55,12 +66,15 @@
 
 .course-meta {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  gap: 8px;
   font-size: 10px;
   color: #666666;
 }
 
-.credits, .department {
+.credits, .level {
   font-weight: bold;
+}
+
+.level {
+  text-transform: capitalize;
 }

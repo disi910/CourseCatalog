@@ -12,21 +12,28 @@ export const CourseDetailModal = ({ courseId, isOpen, onClose }: CourseDetailMod
   const [course, setCourse] = useState<Course | null>(null);
   const [dependencies, setDependencies] = useState<DependencyGraph | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!courseId || !isOpen) return;
+
+    // Reset state when switching courses
+    setCourse(null);
+    setDependencies(null);
+    setError(null);
 
     const fetchCourseDetails = async () => {
       try {
         setLoading(true);
         const [courseData, depsData] = await Promise.all([
           api.getCourse(courseId),
-          api.getCourseDependencies(courseId)
+          api.getCourseDependencies(courseId).catch(() => null)
         ]);
         setCourse(courseData);
         setDependencies(depsData);
-      } catch (error) {
-        console.error('Error fetching course details:', error);
+      } catch (err) {
+        console.error('Error fetching course details:', err);
+        setError('Kunne ikke laste emnedetaljer.');
       } finally {
         setLoading(false);
       }
@@ -47,7 +54,7 @@ export const CourseDetailModal = ({ courseId, isOpen, onClose }: CourseDetailMod
         <div className="retro-modal">
           {/* Windows-style title bar */}
           <div className="retro-modal-titlebar">
-            <span>{course?.id} - {course?.title}</span>
+            <span>{loading ? 'Laster...' : `${course?.id || ''} - ${course?.title || ''}`}</span>
             <button onClick={onClose} className="retro-modal-close">X</button>
           </div>
 
@@ -57,11 +64,23 @@ export const CourseDetailModal = ({ courseId, isOpen, onClose }: CourseDetailMod
               <div className="retro-loading" style={{minHeight: '280px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
                 <span className="retro-blink">Laster...</span>
               </div>
-            ) : (
+            ) : error ? (
+              <div className="retro-error">
+                <div className="retro-error-title">!! Feil !!</div>
+                <p>{error}</p>
+              </div>
+            ) : course ? (
               <>
+                {/* English title */}
+                {course.title_english && (
+                  <p style={{fontStyle: 'italic', color: '#666', fontSize: '12px', marginBottom: '8px'}}>
+                    {course.title_english}
+                  </p>
+                )}
+
                 <h3>Beskrivelse</h3>
                 <p className="whitespace-pre-line" style={{fontSize: '12px'}}>
-                  {course?.description}
+                  {course.description || 'Ingen beskrivelse tilgjengelig.'}
                 </p>
 
                 <hr />
@@ -69,25 +88,25 @@ export const CourseDetailModal = ({ courseId, isOpen, onClose }: CourseDetailMod
                 <div className="retro-grid-2col">
                   <div>
                     <h4>Studiepoeng</h4>
-                    <p>{course?.credits}</p>
+                    <p>{course.credits}</p>
                   </div>
                   <div>
                     <h4>Undervisningsspråk</h4>
-                    <p>{course?.language}</p>
+                    <p>{course.language}</p>
                   </div>
                   <div>
                     <h4>Nivå</h4>
-                    <p className="capitalize">{course?.level}</p>
+                    <p className="capitalize">{course.level}</p>
                   </div>
                   <div>
                     <h4>Semester</h4>
-                    <p>{course?.semester?.map((s: string) =>
-                      s === 'fall' ? 'Høst' : 'Vår'
-                    ).join(', ')}</p>
+                    <p>{course.semester?.length > 0
+                      ? course.semester.map((s: string) => s === 'fall' ? 'Høst' : 'Vår').join(', ')
+                      : 'Ikke spesifisert'}</p>
                   </div>
                 </div>
 
-                {course?.exam_form && (
+                {course.exam_form && (
                   <>
                     <hr />
                     <h4>Eksamen</h4>
@@ -95,10 +114,32 @@ export const CourseDetailModal = ({ courseId, isOpen, onClose }: CourseDetailMod
                   </>
                 )}
 
-                {course?.teaching_form && (
+                {course.teaching_form && (
                   <>
                     <h4>Undervisningsform</h4>
                     <p>{course.teaching_form}</p>
+                  </>
+                )}
+
+                {course.instructor && (
+                  <>
+                    <h4>Foreleser</h4>
+                    <p>{course.instructor}</p>
+                  </>
+                )}
+
+                {/* Prerequisites */}
+                {course.prerequisites && course.prerequisites.length > 0 && (
+                  <>
+                    <hr />
+                    <h4>Forkunnskaper</h4>
+                    <div style={{marginTop: '4px'}}>
+                      {course.prerequisites.map((prereq: any) => (
+                        <span key={prereq.id} className="retro-badge retro-badge-prereq" style={{marginBottom: '4px'}}>
+                          {prereq.id}: {prereq.title}
+                        </span>
+                      ))}
+                    </div>
                   </>
                 )}
 
@@ -121,7 +162,7 @@ export const CourseDetailModal = ({ courseId, isOpen, onClose }: CourseDetailMod
                   </>
                 )}
               </>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
