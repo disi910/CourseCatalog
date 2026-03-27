@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { api } from '../services/api';
 import { DependencyVisualization } from '../components/dependency/DependencyVisualization';
+import { SearchBar } from '../components/SearchBar';
 import type { Course } from '../types';
 
 export const CourseMap = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -29,6 +31,14 @@ export const CourseMap = () => {
 
     fetchCourses();
   }, []);
+
+  const filteredCourses = useMemo(() => {
+    if (!searchQuery.trim()) return courses;
+    const q = searchQuery.toLowerCase();
+    return courses.filter(
+      (c) => c.id.toLowerCase().includes(q) || c.title.toLowerCase().includes(q)
+    );
+  }, [courses, searchQuery]);
 
   if (loading) {
     return (
@@ -54,9 +64,16 @@ export const CourseMap = () => {
       {/* Course Selector */}
       <div className="retro-panel">
         <div className="retro-panel-header">Velg emne å utforske</div>
+        <div style={{ padding: '8px 8px 0' }}>
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Søk etter emne..."
+          />
+        </div>
         <div style={{ maxHeight: '250px', overflowY: 'auto', border: '2px inset #c0c0c0', padding: '4px' }}>
           <div className="retro-grid-3col">
-            {courses.map((course) => (
+            {filteredCourses.map((course) => (
               <button
                 key={course.id}
                 onClick={() => setSelectedCourseId(course.id)}

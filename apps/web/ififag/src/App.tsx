@@ -27,7 +27,7 @@ function App() {
             {/* Logo */}
             <div className="mb-4">
               <img
-                src="/ifi.png"
+                src={`${import.meta.env.BASE_URL}ifi.png`}
                 alt="Institutt for Informatikk Logo"
                 className="retro-home-logo"
                 onError={(e) => {
