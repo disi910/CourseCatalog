@@ -114,18 +114,18 @@ class CourseService:
         course = CourseService.get_course(db, course_id)
         if not course:
             return None
-        
+
         # Build dependency graph
         nodes = []
         edges = []
         visited = set()
-        
+
         def add_course_to_graph(current_course, depth=0):
             if current_course.id in visited or depth > 3:  # Prevent infinite loops
                 return
-            
+
             visited.add(current_course.id)
-            
+
             # Add current course as node
             nodes.append({
                 "id": current_course.id,
@@ -134,23 +134,26 @@ class CourseService:
                 "credits": current_course.credits,
                 "level": current_course.level
             })
-            
+
             # Add prerequisites recursively
+            # Re-query each prerequisite with eager loading to avoid lazy load issues
             for prereq in current_course.prerequisites:
-                # Add prerequisite as node
-                if prereq.id not in visited:
-                    add_course_to_graph(prereq, depth + 1)
-                
-                # Add edge from prerequisite to current course
                 edges.append({
                     "source": prereq.id,
                     "target": current_course.id,
                     "type": "prerequisite"
                 })
-        
+
+                if prereq.id not in visited:
+                    full_prereq = db.query(Course).options(
+                        joinedload(Course.prerequisites)
+                    ).filter(Course.id == prereq.id).first()
+                    if full_prereq:
+                        add_course_to_graph(full_prereq, depth + 1)
+
         # Start building graph from the requested course
         add_course_to_graph(course)
-        
+
         return {
             "nodes": nodes,
             "edges": edges
