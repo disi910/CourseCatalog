@@ -21,6 +21,10 @@ function App() {
         </div>
       </div>
 
+      <div style={{padding: '8px 16px 0 16px'}}>
+        <a href="/" className="btn-back">&laquo; Tilbake til didriksi.com</a>
+      </div>
+
       {currentView === 'home' && (
         <div className="retro-container">
           <div className="retro-center">

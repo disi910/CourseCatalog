@@ -137,6 +137,12 @@ button:active, .retro-btn:active {
   margin-bottom: 12px;
 }
 
+.btn-back:hover {
+  background-color: var(--silver);
+  border: 2px outset var(--silver);
+  color: var(--navy);
+}
+
 /* --- Form Elements --- */
 
 input[type="text"],
