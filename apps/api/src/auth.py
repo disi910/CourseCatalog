@@ -1,4 +1,5 @@
 import os
+import secrets
 from fastapi import HTTPException, Security
 from fastapi.security import APIKeyHeader
 
@@ -9,5 +10,5 @@ async def require_api_key(api_key: str = Security(_api_key_header)):
     expected_key = os.getenv("API_KEY")
     if not expected_key:
         raise HTTPException(status_code=500, detail="API_KEY not configured on server")
-    if not api_key or api_key != expected_key:
+    if not api_key or not secrets.compare_digest(api_key, expected_key):
         raise HTTPException(status_code=403, detail="Invalid or missing API key")
