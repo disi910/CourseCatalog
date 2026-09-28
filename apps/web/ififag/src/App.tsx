@@ -26,7 +26,7 @@ function App() {
           <div className="title-bar">
             <div className="title-bar-text">
               <img src={`${import.meta.env.BASE_URL}icons/exe.svg`} alt="" />
-              {VIEW_TITLES[currentView]} &mdash; Institutt for Informatikk
+              {VIEW_TITLES[currentView]} - Institutt for Informatikk
             </div>
             <div className="title-bar-controls">
               <span aria-hidden="true">_</span>

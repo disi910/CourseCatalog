@@ -69,7 +69,7 @@ export const CourseCatalog = ({ onCourseSelect }: CourseCatalogProps) => {
         onFilterChange={setFilters}
       />
 
-      {/* Results area — always rendered to prevent layout shift */}
+      {/* Results area: always rendered to prevent layout shift */}
       <div style={{minHeight: '200px'}}>
         {/* Error */}
         {error && (
