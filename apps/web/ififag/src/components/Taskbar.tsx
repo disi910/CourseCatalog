@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 
 // Win98-style taskbar shared with the rest of didriksi.com (links go to the portfolio's pages).
-const icon = (name: string) => `${import.meta.env.BASE_URL}icons/${name}.svg`;
+const icon = (name: string, ext = 'svg') => `${import.meta.env.BASE_URL}icons/${name}.${ext}`;
 
-const CLAUDE_USAGE_BAR = 'https://chromewebstore.google.com/detail/imblbfhdbdecholhjbagcjahdkhidneb?utm_source=item-share-cb';
+const USAGE_BAR_FOR_CLAUDE = 'https://chromewebstore.google.com/detail/usage-bar-for-claude-limi/imblbfhdbdecholhjbagcjahdkhidneb';
 
 const formatTime = (d: Date) => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -45,9 +45,10 @@ export const Taskbar = () => {
       {open && (
         <nav className="start-menu" ref={menuRef} aria-label="Start menu">
           <a href="/"><img src={icon('computer')} alt="" />Home</a>
+          <a href="/datanorge/"><img src={icon('map')} alt="" />DataNorge</a>
           <a href="/coursecatalog/"><img src={icon('exe')} alt="" />Course Catalog</a>
           <a href="/housingclassifier/"><img src={icon('chart')} alt="" />Housing Classifier</a>
-          <a href={CLAUDE_USAGE_BAR} target="_blank" rel="noopener noreferrer"><img src={icon('globe')} alt="" />Claude Usage Bar</a>
+          <a href={USAGE_BAR_FOR_CLAUDE} target="_blank" rel="noopener noreferrer"><img src={icon('usage-bar', 'png')} alt="" />Usage Bar for Claude</a>
           <hr />
           <a href="https://github.com/disi910" target="_blank" rel="noopener"><img src={icon('github')} alt="" />GitHub</a>
         </nav>
